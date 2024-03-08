@@ -36,7 +36,7 @@ func (h *Handler) HandlePrivateBookmarks(w http.ResponseWriter, r *http.Request)
 	data := templateData{
 		SiteName:        h.appConf.SiteName,
 		Description:     h.appConf.Description,
-		Title:           "Private BOokmarks",
+		Title:           "Private Bookmarks",
 		BaseURL:         h.appConf.BaseURL,
 		IsAuthenticated: isAuthenticated,
 		PrivateOnly:     true,
