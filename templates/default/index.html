@@ -1,0 +1,81 @@
+{{ define "title" }}Index{{ end }}
+{{ define "content" }}
+
+
+<section id="bookmarks">
+    <p class="mobile-only mobile-helper"><a href="{{ anchorUrl "q" }}" id="top">Go to Search and Tags</a></p>
+    <h2>{{ if .PrivateOnly }}Private Bookmarks{{ else }}Bookmarks{{ end }}</h2>
+    {{ if .TagFilter }}<p>Tag filter: {{ .TagFilter }}</p>{{ end }}
+    {{ if .TextFilter }}<p>Text filter: {{ .TextFilter }}</p>{{ end }}
+    {{ if .Bookmarks }}
+    {{ range .Bookmarks }} 
+    <div class="bookmark">
+        <p class="title"><a href="{{ .URL }}" target="_blank">{{ .Title }}</a></p>
+        
+        {{ if .Description }}
+            <p class="description">{{ .Description }}</p>
+        {{ end }}
+        
+        <div class="extras">
+            <div class="tags">
+                {{ if .Tags }}
+                    Tags: 
+                    {{ range .Tags }}
+                        <a class="tag" href="{{ $.BaseURL}}?tags={{ . }}">{{ . }}</a>
+                    {{ end }}
+                {{ end}}
+            </div>
+            <div class="actions">
+                {{ if $.IsAuthenticated }}
+                [<a href="{{ $.BaseURL }}/admin/bookmarks/{{ .ID }}">Edit</a>]
+                [<a href="{{ $.BaseURL }}/admin/bookmarks/{{ .ID }}/delete">Delete</a>]
+                {{ end }}
+            </div>
+        </div>
+    </div>
+    {{ end }}
+    {{ if gt (len .Pages) 1 }}
+    <nav id="pagination" aria-label="Pagination Navigation">
+        {{ range .Pages }}
+            {{ if .IsActive }}
+                {{ .Number }}
+            {{ else }}
+                <a href="{{ paginationUrl .Number }}" aria-label="Go to page {{ .Number }}">{{ .Number }}</a>
+            {{ end }}
+        {{ end }}
+    </nav>
+    {{ end }}
+    {{ else }}
+    <div class="bookmark">
+        <p>No matching bookmarks</p>
+    </div>
+    {{ end }}
+</section>
+
+
+<section id="sidebar">
+    <p class="mobile-only mobile-helper"><a href="{{ anchorUrl "top" }}">Go to top</a></p>
+    <section id="search">
+        <h2>Search</h2>
+        <form method="get" action="{{ .BaseURL }}">
+            <input type="text" name="q" id="q" placeholder="Search" aria-label="Search" />
+            {{ if .TagFilter }}
+            <input type="hidden" name="tags" value="{{ .TagFilter }}" />
+            {{ end }}
+        </form>
+    </section>
+
+    {{ if .Tags }}
+    <section id="tags">
+        <h2>Tags</h2>
+        <ul>
+            {{ range .Tags }}
+            <li><a href="{{ $.BaseURL}}/tags/{{ . }}">{{ . }}</a></li>    
+            {{ end }}
+        </ul>
+    </section>
+    {{ end }}
+</section>
+
+
+{{ end }}

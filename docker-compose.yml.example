@@ -1,0 +1,12 @@
+version: "3.9"
+services:
+  app:
+    container_name: bookmark-manager
+    build:
+      dockerfile: Dockerfile
+      context: .
+    volumes:
+      - ./bookmarks.db:/app/bookmarks.db
+      - ./config.yml:/app/config.yml
+    ports:
+      - "8000:8000"

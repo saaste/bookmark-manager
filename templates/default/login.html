@@ -1,0 +1,19 @@
+{{ define "title" }}Log In{{ end }}
+{{ define "content" }}
+
+<section id="login">
+    <h2>Log In</h2>
+    <form method="post" action="{{ .BaseURL }}/login">
+        <div class="input-group">
+            <label for="password">Password</label>
+            <div class="input-group horizontal">
+                <input type="password" name="password" id="password" />
+                <button type="submit">Log In</button>
+            </div>
+            {{ if .Error }}<p class="warning">{{ .Error }}</p>{{ end }}
+            
+        </div>
+    </form>
+</section>
+
+{{ end }}

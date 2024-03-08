@@ -1,0 +1,38 @@
+{{ define "base" }}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>{{ .SiteName }}: {{ template "title" }}</title>
+    <link rel="stylesheet" href="/assets/reset.css" />
+    <link rel="stylesheet" href="/assets/styles.css" />
+    <base href="{{ .BaseURL }}" />
+    <script type="module" src="/assets/app.js"></script>
+    <script type="module" src="/assets/api.js"></script>
+</head>
+<body>
+    <nav id="header">
+        <div class="content">
+            <h1><a href="{{ .BaseURL }}">{{ .SiteName }}</a></h1>
+            <div class="auth-nav">
+                {{ if .IsAuthenticated }}
+                <a href="{{ .BaseURL }}/admin/bookmarks/add">Add Bookmark</a> |
+                <a href="{{ .BaseURL }}/admin/bookmarks">Private Bookmarks</a> |
+                <a href="{{ .BaseURL }}/logout">Log out</a>
+                {{ else }}
+                <a href="{{ .BaseURL }}/login">Log in</a>
+                {{ end }}
+            </div>
+        </div>
+    </nav>
+    <section id="content">
+        {{ template "content" .}}
+    </section>
+    <section id="footer">
+        Powered by <a href="https://github.com/saaste/bookmark-manager">Bookmark Manager</a> | <a href="{{ feedUrl }}">RSS-feed</a>
+    </section>
+</body>
+</html>
+{{ end }}
