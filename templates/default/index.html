@@ -20,7 +20,7 @@
                     {{ if .Tags }}
                         Tags: 
                         {{ range .Tags }}
-                            <a class="tag" href="{{ $.BaseURL}}?tags={{ . }}">{{ . }}</a>
+                            <a class="tag" href="{{ $.BaseURL}}/tags/{{ . }}">{{ . }}</a>
                         {{ end }}
                     {{ end}}
                 </div>
