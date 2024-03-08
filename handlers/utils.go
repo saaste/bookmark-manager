@@ -109,7 +109,7 @@ func (h *Handler) getFeedURL(r *http.Request) string {
 	url := url.URL{
 		Scheme: r.URL.Scheme,
 		Host:   r.URL.Host,
-		Path:   fmt.Sprintf("%s/rss", strings.TrimSuffix(r.URL.Path, "/")),
+		Path:   fmt.Sprintf("%s/feed", strings.TrimSuffix(r.URL.Path, "/")),
 	}
 	return url.String()
 }

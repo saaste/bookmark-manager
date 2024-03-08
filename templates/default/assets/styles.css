@@ -162,6 +162,10 @@ button {
     border-radius: 10px;
 }
 
+.bookmark h3 {
+    text-shadow: none;
+}
+
 .title {
     margin-bottom: 1em;
 }

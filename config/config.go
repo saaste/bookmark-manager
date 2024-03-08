@@ -11,13 +11,14 @@ const (
 )
 
 type AppConfig struct {
-	SiteName string `yaml:"site_name"`
-	BaseURL  string `yaml:"base_url"`
-	Password string `yaml:"password"`
-	Secret   string `yaml:"secret"`
-	Port     int    `yaml:"port"`
-	PageSize int    `yaml:"page_size"`
-	Template string `yaml:"template"`
+	SiteName    string `yaml:"site_name"`
+	Description string `uaml:"description"`
+	BaseURL     string `yaml:"base_url"`
+	Password    string `yaml:"password"`
+	Secret      string `yaml:"secret"`
+	Port        int    `yaml:"port"`
+	PageSize    int    `yaml:"page_size"`
+	Template    string `yaml:"template"`
 }
 
 func LoadConfig() (*AppConfig, error) {

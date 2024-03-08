@@ -15,7 +15,9 @@ type Page struct {
 
 type templateData struct {
 	SiteName        string
+	Description     string
 	BaseURL         string
+	Title           string
 	IsAuthenticated bool
 	PrivateOnly     bool
 	Bookmarks       []*bookmarks.Bookmark

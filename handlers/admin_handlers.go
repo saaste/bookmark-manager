@@ -35,6 +35,8 @@ func (h *Handler) HandlePrivateBookmarks(w http.ResponseWriter, r *http.Request)
 
 	data := templateData{
 		SiteName:        h.appConf.SiteName,
+		Description:     h.appConf.Description,
+		Title:           "Private BOokmarks",
 		BaseURL:         h.appConf.BaseURL,
 		IsAuthenticated: isAuthenticated,
 		PrivateOnly:     true,
@@ -56,6 +58,8 @@ func (h *Handler) HandleBookmarkAdd(w http.ResponseWriter, r *http.Request) {
 	data := adminTemplateData{
 		templateData: templateData{
 			SiteName:        h.appConf.SiteName,
+			Description:     h.appConf.Description,
+			Title:           "Add Bookmark",
 			BaseURL:         h.appConf.BaseURL,
 			IsAuthenticated: isAuthenticated,
 		},
@@ -131,6 +135,8 @@ func (h *Handler) HandleBookmarkEdit(w http.ResponseWriter, r *http.Request) {
 	data := adminTemplateData{
 		templateData: templateData{
 			SiteName:        h.appConf.SiteName,
+			Description:     h.appConf.Description,
+			Title:           "Edit Bookmark",
 			BaseURL:         h.appConf.BaseURL,
 			IsAuthenticated: isAuthenticated,
 		},
@@ -207,6 +213,8 @@ func (h *Handler) HandleBookmarkDelete(w http.ResponseWriter, r *http.Request) {
 	data := adminTemplateData{
 		templateData: templateData{
 			SiteName:        h.appConf.SiteName,
+			Description:     h.appConf.Description,
+			Title:           "Delete Bookmark",
 			BaseURL:         h.appConf.BaseURL,
 			IsAuthenticated: isAuthenticated,
 		},

@@ -1,6 +1,9 @@
 # Visible in the header, title and in RSS feed
 site_name: Bookmark Manager
 
+# Used in meta tag and in RSS feed
+description: My personal bookmark collection
+
 # Base URL of the site
 base_url: http://localhost:8000                 
 

@@ -3,37 +3,37 @@
 
 
 <section id="bookmarks">
-    <p class="mobile-only mobile-helper"><a href="{{ anchorUrl "q" }}" id="top">Go to Search and Tags</a></p>
-    <h2>{{ if .PrivateOnly }}Private Bookmarks{{ else }}Bookmarks{{ end }}</h2>
-    {{ if .TagFilter }}<p>Tag filter: {{ .TagFilter }}</p>{{ end }}
-    {{ if .TextFilter }}<p>Text filter: {{ .TextFilter }}</p>{{ end }}
+    <nav class="mobile-only mobile-helper"><a href="{{ anchorUrl "q" }}" id="top">Go to Search and Tags</a></nav>
+    <h2>{{ .Title }}</h2>
     {{ if .Bookmarks }}
-    {{ range .Bookmarks }} 
-    <div class="bookmark">
-        <p class="title"><a href="{{ .URL }}" target="_blank">{{ .Title }}</a></p>
-        
-        {{ if .Description }}
-            <p class="description">{{ .Description }}</p>
-        {{ end }}
-        
-        <div class="extras">
-            <div class="tags">
-                {{ if .Tags }}
-                    Tags: 
-                    {{ range .Tags }}
-                        <a class="tag" href="{{ $.BaseURL}}?tags={{ . }}">{{ . }}</a>
+    <ul>
+        {{ range .Bookmarks }} 
+        <li class="bookmark">
+            <h3 class="title"><a href="{{ .URL }}" target="_blank">{{ .Title }}</a></h3>
+            
+            {{ if .Description }}
+                <p class="description">{{ .Description }}</p>
+            {{ end }}
+            
+            <div class="extras">
+                <div class="tags">
+                    {{ if .Tags }}
+                        Tags: 
+                        {{ range .Tags }}
+                            <a class="tag" href="{{ $.BaseURL}}?tags={{ . }}">{{ . }}</a>
+                        {{ end }}
+                    {{ end}}
+                </div>
+                <div class="actions">
+                    {{ if $.IsAuthenticated }}
+                    [<a href="{{ $.BaseURL }}/admin/bookmarks/{{ .ID }}">Edit</a>]
+                    [<a href="{{ $.BaseURL }}/admin/bookmarks/{{ .ID }}/delete">Delete</a>]
                     {{ end }}
-                {{ end}}
+                </div>
             </div>
-            <div class="actions">
-                {{ if $.IsAuthenticated }}
-                [<a href="{{ $.BaseURL }}/admin/bookmarks/{{ .ID }}">Edit</a>]
-                [<a href="{{ $.BaseURL }}/admin/bookmarks/{{ .ID }}/delete">Delete</a>]
-                {{ end }}
-            </div>
-        </div>
-    </div>
-    {{ end }}
+        </li>
+        {{ end }}
+    </ul>
     {{ if gt (len .Pages) 1 }}
     <nav id="pagination" aria-label="Pagination Navigation">
         {{ range .Pages }}
@@ -53,14 +53,14 @@
 </section>
 
 
-<section id="sidebar">
-    <p class="mobile-only mobile-helper"><a href="{{ anchorUrl "top" }}">Go to top</a></p>
+<aside id="sidebar">
+    <nav class="mobile-only mobile-helper"><a href="{{ anchorUrl "top" }}">Go to top</a></nav>
     <section id="search">
         <h2>Search</h2>
         <form method="get" action="{{ .BaseURL }}">
-            <input type="text" name="q" id="q" placeholder="Search" aria-label="Search" />
+            <input type="text" name="q" id="q" aria-label="Search by keyword">
             {{ if .TagFilter }}
-            <input type="hidden" name="tags" value="{{ .TagFilter }}" />
+            <input type="hidden" name="tags" value="{{ .TagFilter }}">
             {{ end }}
         </form>
     </section>
@@ -75,7 +75,7 @@
         </ul>
     </section>
     {{ end }}
-</section>
+</aside>
 
 
 {{ end }}

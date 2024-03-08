@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -23,8 +24,15 @@ func (h *Handler) HandleIndex(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	title := "Recent Bookmarks"
+	if q != "" {
+		title = "Search Results"
+	}
+
 	data := templateData{
 		SiteName:        h.appConf.SiteName,
+		Description:     h.appConf.Description,
+		Title:           title,
 		BaseURL:         h.appConf.BaseURL,
 		IsAuthenticated: isAuthenticated,
 		Bookmarks:       bookmarkResult.Bookmarks,
@@ -55,12 +63,15 @@ func (h *Handler) HandleTags(w http.ResponseWriter, r *http.Request) {
 
 	data := templateData{
 		SiteName:        h.appConf.SiteName,
+		Description:     h.appConf.Description,
+		Title:           fmt.Sprintf("Bookmarks With Tag: %s", tagsParam),
 		BaseURL:         h.appConf.BaseURL,
 		IsAuthenticated: isAuthenticated,
-		Bookmarks:       bookmarkResult.Bookmarks,
-		Tags:            allTags,
-		TagFilter:       tagsParam,
-		Pages:           h.getPages(page, bookmarkResult.PageCount),
+
+		Bookmarks: bookmarkResult.Bookmarks,
+		Tags:      allTags,
+		TagFilter: tagsParam,
+		Pages:     h.getPages(page, bookmarkResult.PageCount),
 	}
 
 	h.parseTemplateWithFunc("index.html", r, w, data)

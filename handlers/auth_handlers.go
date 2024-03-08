@@ -19,8 +19,10 @@ func (h *Handler) HandleLogin(w http.ResponseWriter, r *http.Request) {
 	data := loginTemplateData{
 		templateData: templateData{
 			SiteName:        h.appConf.SiteName,
+			Description:     h.appConf.Description,
 			BaseURL:         h.appConf.BaseURL,
 			IsAuthenticated: isAuthenticated,
+			Title:           "Login",
 		},
 	}
 

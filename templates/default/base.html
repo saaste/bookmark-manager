@@ -3,20 +3,22 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>{{ .SiteName }}: {{ template "title" }}</title>
-    <link rel="stylesheet" href="/assets/reset.css" />
-    <link rel="stylesheet" href="/assets/styles.css" />
-    <base href="{{ .BaseURL }}" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{{ .Description }}">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{{ .Title }} | {{ .SiteName }}</title>
+    <link rel="stylesheet" href="/assets/reset.css">
+    <link rel="stylesheet" href="/assets/styles.css">
+    <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="{{ feedUrl }}">
+    <base href="{{ .BaseURL }}">
     <script type="module" src="/assets/app.js"></script>
     <script type="module" src="/assets/api.js"></script>
 </head>
 <body>
-    <nav id="header">
+    <header id="header">
         <div class="content">
             <h1><a href="{{ .BaseURL }}">{{ .SiteName }}</a></h1>
-            <div class="auth-nav">
+            <nav class="auth-nav">
                 {{ if .IsAuthenticated }}
                 <a href="{{ .BaseURL }}/admin/bookmarks/add">Add Bookmark</a> |
                 <a href="{{ .BaseURL }}/admin/bookmarks">Private Bookmarks</a> |
@@ -24,15 +26,16 @@
                 {{ else }}
                 <a href="{{ .BaseURL }}/login">Log in</a>
                 {{ end }}
-            </div>
+            </nav>
         </div>
-    </nav>
-    <section id="content">
+    </header>
+    <main id="content">
         {{ template "content" .}}
-    </section>
-    <section id="footer">
-        Powered by <a href="https://github.com/saaste/bookmark-manager">Bookmark Manager</a> | <a href="{{ feedUrl }}">RSS-feed</a>
-    </section>
+    </main>
+    <footer id="footer">
+        Powered by <a href="https://github.com/saaste/bookmark-manager" aria-label="Bookmark Manager @ GitHub">Bookmark Manager</a> |
+        <a href="{{ feedUrl }}">RSS-feed</a>
+    </footer>
 </body>
 </html>
 {{ end }}

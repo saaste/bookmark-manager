@@ -11,7 +11,7 @@ import (
 	"github.com/saaste/bookmark-manager/bookmarks"
 )
 
-func (h *Handler) HandleRSS(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) HandleFeed(w http.ResponseWriter, r *http.Request) {
 	isAuthenticated := h.isAuthenticated(r)
 	bookmarksResult, err := h.bookmarkRepo.GetAll(isAuthenticated, 1, 20)
 	if err != nil {
@@ -22,7 +22,7 @@ func (h *Handler) HandleRSS(w http.ResponseWriter, r *http.Request) {
 	h.bookmarksToFeed(bookmarksResult.Bookmarks, w)
 }
 
-func (h *Handler) HandleTagsRSS(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) HandleTagsFeed(w http.ResponseWriter, r *http.Request) {
 	isAuthenticated := h.isAuthenticated(r)
 
 	tagsParam := chi.URLParam(r, "tags")
@@ -49,9 +49,10 @@ func (h *Handler) bookmarksToFeed(bookmarks []*bookmarks.Bookmark, w http.Respon
 	}
 
 	feed := &feeds.Feed{
-		Title:   h.appConf.SiteName,
-		Link:    &feeds.Link{Href: h.appConf.BaseURL, Rel: "self"},
-		Updated: updated,
+		Title:       h.appConf.SiteName,
+		Description: h.appConf.Description,
+		Link:        &feeds.Link{Href: h.appConf.BaseURL, Rel: "self"},
+		Updated:     updated,
 	}
 
 	for _, bm := range bookmarks {
@@ -69,6 +70,6 @@ func (h *Handler) bookmarksToFeed(bookmarks []*bookmarks.Bookmark, w http.Respon
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/xml")
+	w.Header().Set("Content-Type", "application/atom+xml")
 	io.WriteString(w, atom)
 }
