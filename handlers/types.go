@@ -18,6 +18,7 @@ type templateData struct {
 	Description     string
 	BaseURL         string
 	Title           string
+	CurrentURL      string
 	IsAuthenticated bool
 	PrivateOnly     bool
 	Bookmarks       []*bookmarks.Bookmark

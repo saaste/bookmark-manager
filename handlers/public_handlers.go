@@ -34,6 +34,7 @@ func (h *Handler) HandleIndex(w http.ResponseWriter, r *http.Request) {
 		Description:     h.appConf.Description,
 		Title:           title,
 		BaseURL:         h.appConf.BaseURL,
+		CurrentURL:      h.getCurrentURL(r, h.appConf),
 		IsAuthenticated: isAuthenticated,
 		Bookmarks:       bookmarkResult.Bookmarks,
 		Tags:            allTags,
@@ -66,6 +67,7 @@ func (h *Handler) HandleTags(w http.ResponseWriter, r *http.Request) {
 		Description:     h.appConf.Description,
 		Title:           fmt.Sprintf("Bookmarks With Tag: %s", tagsParam),
 		BaseURL:         h.appConf.BaseURL,
+		CurrentURL:      h.getCurrentURL(r, h.appConf),
 		IsAuthenticated: isAuthenticated,
 
 		Bookmarks: bookmarkResult.Bookmarks,

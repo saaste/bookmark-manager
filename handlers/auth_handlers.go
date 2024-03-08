@@ -21,6 +21,7 @@ func (h *Handler) HandleLogin(w http.ResponseWriter, r *http.Request) {
 			SiteName:        h.appConf.SiteName,
 			Description:     h.appConf.Description,
 			BaseURL:         h.appConf.BaseURL,
+			CurrentURL:      h.getCurrentURL(r, h.appConf),
 			IsAuthenticated: isAuthenticated,
 			Title:           "Login",
 		},
