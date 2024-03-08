@@ -17,7 +17,6 @@ screen reader support, but if have an idea how to make it even better, feel free
    - bookmarks.db.example ➔ bookmarks.db
    - docker-compose.yml.example ➔ docker-compose.yml
    - config.yml.example ➔ config.yml
-   - bookmarks.example ➔ bookmarks.db
 2. Configure settings in `config.json`. Each setting is described in the config file.
 
 ### Running with Docker (recommended)
