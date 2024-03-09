@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/saaste/bookmark-manager/config"
@@ -9,17 +8,17 @@ import (
 )
 
 type Authenticator struct {
-	appConf *config.AppConfig
+	appConf                *config.AppConfig
+	generateFromPassword   func([]byte, int) ([]byte, error)
+	compareHashAndPassword func([]byte, []byte) error
 }
 
 func NewAuthenticator(appConf *config.AppConfig) *Authenticator {
 	return &Authenticator{
-		appConf: appConf,
+		appConf:                appConf,
+		generateFromPassword:   bcrypt.GenerateFromPassword,
+		compareHashAndPassword: bcrypt.CompareHashAndPassword,
 	}
-}
-
-func (a *Authenticator) CreateCookieValue() string {
-	return a.calculateHash()
 }
 
 func (a *Authenticator) IsValid(c *http.Cookie) bool {
@@ -27,15 +26,14 @@ func (a *Authenticator) IsValid(c *http.Cookie) bool {
 		return false
 	}
 
-	err := bcrypt.CompareHashAndPassword([]byte(c.Value), []byte(a.appConf.Password+a.appConf.Secret))
+	err := a.compareHashAndPassword([]byte(c.Value), []byte(a.appConf.Password+a.appConf.Secret))
 	return err == nil
 }
 
-func (a *Authenticator) calculateHash() string {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(a.appConf.Password+a.appConf.Secret), 4)
+func (a *Authenticator) CalculateHash() (string, error) {
+	bytes, err := a.generateFromPassword([]byte(a.appConf.Password+a.appConf.Secret), 4)
 	if err != nil {
-		log.Printf("failed to create the hash: %v\n", err)
-		return ""
+		return "", err
 	}
-	return string(bytes)
+	return string(bytes), nil
 }
