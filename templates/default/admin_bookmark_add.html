@@ -4,13 +4,14 @@
 <section id="bookmarks">
     <h2>Add a new bookmark</h2>
 
-    <form method="post" action="{{ .BaseURL}}/admin/bookmarks/add">
+    <form method="post" action="{{ .BaseURL}}/admin/bookmarks/add" id="bookmark-form">
         <div class="input-group">
-            <label for="url">URL</label>
+            <label for="url">URL (required)</label>
             <div class="input-group horizontal">
-                <input type="text" name="url" id="url" value="{{ .Bookmark.URL }}" />
+                <input type="text" name="url" id="url" value="{{ .Bookmark.URL }}" required aria-required="true" />
                 <button type="button" id="scrape">Fetch Metadata</button>
-                <span id="scrape-loader" class="loader hidden"></span>                
+            </div>
+            <div id="fetching-metadata-message" role="alert" aria-live="assertive" class="hidden progress-indicator">
             </div>
             {{ if index .Errors "url" }}
             <span class="warning">{{ index .Errors "url" }}</span>
@@ -18,8 +19,8 @@
         </div>
         
         <div class="input-group">
-            <label for="title">Title</label>
-            <input type="text" name="title" id="title" value="{{ .Bookmark.Title }}" />
+            <label for="title">Title (required)</label>
+            <input type="text" name="title" id="title" value="{{ .Bookmark.Title }}" required aria-required="true" />
             {{ if index .Errors "title" }}
             <span class="warning">{{ index .Errors "title" }}</span>
             {{ end }}
@@ -30,16 +31,15 @@
             <textarea name="description" id="description" rows="4">{{ .Bookmark.Description }}</textarea>
         </div>
         
-        <div class="input-group horizontal">
-            <input type="checkbox" name="is_private" id="is_private" value="1" {{ if .Bookmark.IsPrivate }}checked{{end}} /><br />
+        <div class="input-group horizontal checkbox">
+            <input type="checkbox" name="is_private" id="is_private" value="1" {{ if .Bookmark.IsPrivate }}checked{{end}} />
             <label for="is_private">Private</label>
         </div>
     
         <div class="input-group">
-            <label for="tags">Tags (separated with spaces) </label>
-            <input type="text" name="tags" id="tags"  value="{{ .Tags }}" /><br />
+            <label for="tags">Tags (separated with spaces)</label>
+            <input type="text" name="tags" id="tags"  value="{{ .Tags }}" />
         </div>
-    
     
         <button type="submit">Add</button>
     </form>

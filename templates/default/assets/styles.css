@@ -5,6 +5,7 @@
     --bookmark-bg-color: hwb(233 19% 75%);
     --input-color: hsl(231, 15%, 30%);
     --input-border-color: hsl(231, 15%, 35%);
+    --input-invalid-border-color: hsl(0, 50%, 51%);
     --disabled-color: hsl(231, 2%, 30%);
     --disabled-border-color: hsl(231, 2%, 35%);
     --disabled-text-color: hsl(231, 2%, 45%);
@@ -16,6 +17,7 @@
     --warning-color-glow: rgba(241, 131, 131, 0.5);
     --footer-border-color: hsl(231, 15%, 17%);
     --footer-color: hsl(231, 15%, 55%);
+    --progress-indicator-color: hsl(120, 60%, 68%);
     --font-family: 'Courier New', Courier, monospace
 }
 
@@ -52,7 +54,7 @@ a {
     color: #FFB86C;
 }
 
-a:hover {
+a:hover, a:focus {
     text-shadow: 0 0 5px rgba(255, 184, 108, 0.7);
 }
 
@@ -75,14 +77,34 @@ input:disabled, textarea:disabled, button:disabled {
     color: var(--disabled-text-color);
 }
 
+input:focus, textarea:focus, button:focus {
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+}
+
+input.invalid {
+    border: 2px solid var(--input-invalid-border-color);
+}
+
 input[type=checkbox] {
-    margin-right: 1em;
-    vertical-align: middle;
+    margin-right: 0.5em;
+    margin-bottom: 0.4em;
+}
+
+input#url {
+    flex: auto;
 }
 
 button {
     background-color: var(--button-color);
     border: 2px solid var(--button-border-color);
+}
+
+button:hover {
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+}
+
+button[disabled]:hover {
+    box-shadow: none;
 }
 
 #header {
@@ -196,6 +218,10 @@ button {
     align-items: center;
 }
 
+.checkbox {
+    align-items: center;
+}
+
 .box {
     margin-top: 1em;
     margin-bottom: 1em;
@@ -205,9 +231,18 @@ button {
     border-radius: 5px;
 }
 
+.box p {
+    margin-top: 1em;
+}
+
 .warning {
     color: var(--warning-color);
     text-shadow: 0 0 5px var(--warning-color-glow);
+}
+
+.progress-indicator {
+    color: var(--progress-indicator-color);
+    text-shadow: 0 0 5px rgba(124, 222, 124, 0.7);;
 }
 
 .mobile-only {
@@ -218,27 +253,6 @@ button {
     margin: 1em 0 1em 0;
     font-size: 0.8em;
     text-align: center;
-}
-
-.loader {
-    width: 24px;
-    height: 24px;
-    border: 5px solid #FFF;
-    border-bottom-color: transparent;
-    border-radius: 50%;
-    display: inline-block;
-    box-sizing: border-box;
-    animation: rotation 1s linear infinite;
-}
-
-@keyframes rotation {
-    0% {
-        transform: rotate(0deg);
-    }
-
-    100% {
-        transform: rotate(360deg);
-    }
 }
 
 .hidden {
