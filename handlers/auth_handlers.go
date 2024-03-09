@@ -36,9 +36,14 @@ func (h *Handler) HandleLogin(w http.ResponseWriter, r *http.Request) {
 		if r.Form.Get("password") != h.appConf.Password {
 			data.Error = "Invalid password"
 		} else {
+			hash, err := h.auth.CalculateHash()
+			if err != nil {
+				h.internalServerError(w, "Failed to calculate password hash", err)
+				return
+			}
 			http.SetCookie(w, &http.Cookie{
 				Name:     "auth",
-				Value:    h.auth.CreateCookieValue(),
+				Value:    hash,
 				Path:     "/",
 				HttpOnly: true,
 				Secure:   false,
