@@ -16,7 +16,7 @@
     --warning-color: rgb(241, 131, 131);
     --warning-color-glow: rgba(241, 131, 131, 0.5);
     --footer-border-color: hsl(231, 15%, 17%);
-    --footer-color: hsl(231, 15%, 55%);
+    --footer-color: hsl(231, 15%, 80%);
     --progress-indicator-color: hsl(120, 60%, 68%);
     --font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
@@ -177,6 +177,17 @@ button[disabled]:hover {
     color: var(--footer-color);
 }
 
+.header {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5em;
+    align-items: center;
+}
+
+.header h2 {
+    flex: auto;
+}
+
 .bookmark {
     background-color: var(--bookmark-bg-color);
     margin: 1.2em 1.2em 1.2em 0;
@@ -204,13 +215,16 @@ button[disabled]:hover {
 
 .actions {
     text-align: right;
-    opacity: 0.5;
 }
 
 .input-group {
     display: flex;
     flex-direction: column;
     margin-bottom: 1em;
+}
+
+.flex {
+    display: flex;
 }
 
 .horizontal {
@@ -243,6 +257,12 @@ button[disabled]:hover {
 .progress-indicator {
     color: var(--progress-indicator-color);
     text-shadow: 0 0 5px rgba(124, 222, 124, 0.7);;
+}
+
+.feed-icon {
+    width: 1.2em;
+    height: 1.2em;
+    margin-right: 1em;
 }
 
 .mobile-only {

@@ -4,7 +4,12 @@
 
 <section id="bookmarks">
     <nav class="mobile-only mobile-helper"><a href="{{ anchorUrl "q" }}" id="top">Go to Search and Tags</a></nav>
-    <h2>{{ .Title }}</h2>
+    <div class="header">
+        <h2>{{ .Title }}</h2>
+        {{ if .Bookmarks }}
+        <a href="{{ feedUrl }}"><img src="{{ .BaseURL }}/assets/feed.png" class="feed-icon" alt="RSS feed icon" title="Bookmarks feed"></a>
+        {{ end }}
+    </div>
     {{ if .Bookmarks }}
     <ul>
         {{ range .Bookmarks }} 
@@ -26,8 +31,8 @@
                 </div>
                 <div class="actions">
                     {{ if $.IsAuthenticated }}
-                    [<a href="{{ $.BaseURL }}/admin/bookmarks/{{ .ID }}">Edit</a>]
-                    [<a href="{{ $.BaseURL }}/admin/bookmarks/{{ .ID }}/delete">Delete</a>]
+                    <a href="{{ $.BaseURL }}/admin/bookmarks/{{ .ID }}">Edit</a>
+                    <a href="{{ $.BaseURL }}/admin/bookmarks/{{ .ID }}/delete">Delete</a>
                     {{ end }}
                 </div>
             </div>
