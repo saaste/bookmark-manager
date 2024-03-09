@@ -18,7 +18,7 @@
     --footer-border-color: hsl(231, 15%, 17%);
     --footer-color: hsl(231, 15%, 55%);
     --progress-indicator-color: hsl(120, 60%, 68%);
-    --font-family: 'Courier New', Courier, monospace
+    --font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
 * {
