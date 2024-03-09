@@ -43,7 +43,7 @@ func main() {
 	r.Get("/", handler.HandleIndex)
 	r.Get("/feed", handler.HandleFeed)
 	r.Get("/tags/{tags}", handler.HandleTags)
-	r.Get("/tags/{tags}/feed", handler.HandleTagsFeed)
+	r.Get("/tags/{tags}/feed", handler.HandleFeed)
 	r.Get("/login", handler.HandleLogin)
 	r.Post("/login", handler.HandleLogin)
 	r.Get("/logout", handler.HandleLogout)

@@ -3,7 +3,6 @@ package handlers
 import (
 	"io"
 	"net/http"
-	"strings"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -13,33 +12,16 @@ import (
 
 func (h *Handler) HandleFeed(w http.ResponseWriter, r *http.Request) {
 	isAuthenticated := h.isAuthenticated(r)
-	bookmarksResult, err := h.bookmarkRepo.GetAll(isAuthenticated, 1, 20)
+	tags := chi.URLParam(r, "tags")
+	q := r.URL.Query().Get("q")
+
+	bookmarkResult, err := h.getBookmarksWithPagination(isAuthenticated, q, tags, 1, 20)
 	if err != nil {
 		h.internalServerError(w, "Failed to fetch bookmarks", err)
 		return
 	}
 
-	h.bookmarksToFeed(bookmarksResult.Bookmarks, w)
-}
-
-func (h *Handler) HandleTagsFeed(w http.ResponseWriter, r *http.Request) {
-	isAuthenticated := h.isAuthenticated(r)
-
-	tagsParam := chi.URLParam(r, "tags")
-	var tags []string
-	if tagsParam != "" {
-		tags = strings.Split(tagsParam, " ")
-	} else {
-		tags = make([]string, 0)
-	}
-
-	bookmarksResult, err := h.bookmarkRepo.GetByTags(isAuthenticated, tags, 1, 20)
-	if err != nil {
-		h.internalServerError(w, "Failed to fetch bookmarks", err)
-		return
-	}
-
-	h.bookmarksToFeed(bookmarksResult.Bookmarks, w)
+	h.bookmarksToFeed(bookmarkResult.Bookmarks, w)
 }
 
 func (h *Handler) bookmarksToFeed(bookmarks []*bookmarks.Bookmark, w http.ResponseWriter) {

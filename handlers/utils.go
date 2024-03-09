@@ -111,10 +111,17 @@ func (h *Handler) getAnchorURL(r *http.Request, id string) string {
 }
 
 func (h *Handler) getFeedURL(r *http.Request) string {
+	q := r.URL.Query().Get("q")
+	rawQuery := ""
+	if q != "" {
+		rawQuery = fmt.Sprintf("q=%s", q)
+	}
+
 	url := url.URL{
-		Scheme: r.URL.Scheme,
-		Host:   r.URL.Host,
-		Path:   fmt.Sprintf("%s/feed", strings.TrimSuffix(r.URL.Path, "/")),
+		Scheme:   r.URL.Scheme,
+		Host:     r.URL.Host,
+		Path:     fmt.Sprintf("%s/feed", strings.TrimSuffix(r.URL.Path, "/")),
+		RawQuery: rawQuery,
 	}
 	return url.String()
 }

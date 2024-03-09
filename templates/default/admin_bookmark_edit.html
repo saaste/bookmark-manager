@@ -4,18 +4,18 @@
 <section id="bookmarks">
     <h2>Edit bookmark</h2>
 
-    <form method="post" action="{{ .BaseURL}}/admin/bookmarks/{{ .Bookmark.ID }}">
+    <form method="post" action="{{ .BaseURL}}/admin/bookmarks/{{ .Bookmark.ID }}" id="bookmark-form">
         <div class="input-group">
-            <label for="url">URL</label>
-            <input type="text" name="url" id="url" value="{{ .Bookmark.URL }}" />
+            <label for="url">URL (required)</label>
+            <input type="text" name="url" id="url" value="{{ .Bookmark.URL }}" required aria-required="true" />
             {{ if index .Errors "url" }}
             <span class="warning">{{ index .Errors "url" }}</span>
             {{ end }}
         </div>
         
         <div class="input-group">
-            <label for="title">Title</label>
-            <input type="text" name="title" id="title" value="{{ .Bookmark.Title }}" />
+            <label for="title">Title (required)</label>
+            <input type="text" name="title" id="title" value="{{ .Bookmark.Title }}" required aria-required="true" />
             {{ if index .Errors "title" }}
             <span class="warning">{{ index .Errors "title" }}</span>
             {{ end }}

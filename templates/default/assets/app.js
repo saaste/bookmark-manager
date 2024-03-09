@@ -1,46 +1,98 @@
 import { getMetadata } from "./api.js";
 
 let baseUrl;
+let scrape;
+let url;
+let title;
+let description;
+let fetchingMessage;
+let bookmarkForm;
+let submitButton;
+let requiredFields;
 
 window.onload = () => {
     baseUrl = document.querySelector("base").attributes.getNamedItem("href").value;
+
+    scrape = document.getElementById("scrape");
+
+    url = document.getElementById("url");
+    title = document.getElementById("title");
+    description = document.getElementById("description");
+    fetchingMessage = document.getElementById("fetching-metadata-message");
+    bookmarkForm = document.getElementById("bookmark-form");
     
-    let scrape = document.getElementById("scrape");
-    let url = document.getElementById("url");
-    let title = document.getElementById("title");
-    let description = document.getElementById("description");
-    let loader = document.getElementById("scrape-loader");
-
-    if (!scrape) {
-        return;
+    if (bookmarkForm) {
+        initializeFormValidation();
     }
+    
 
-    scrape.addEventListener("click", (e) => {
-        scrape.disabled = true;
-        url.disabled = true;
-        title.disabled = true;
-        description.disabled = true;
-        loader.classList.remove("hidden");
+    if (scrape) {
+        scrape.addEventListener("click", handleScrapeButtonClick)
+    }
+}
 
-        getMetadata(baseUrl, url.value)
+const handleScrapeButtonClick = (e) => {
+    let inputs = bookmarkForm.querySelectorAll("input, button, textarea");
+    inputs.forEach((input) => {
+        input.disabled = true;
+    });
+    
+    fetchingMessage.innerHTML = "Fetching metadata";
+    fetchingMessage.classList.remove("hidden");
+
+    getMetadata(baseUrl, url.value)
         .then(resp => {
-            if (resp.title) {
+            if (resp.title || resp.description) {
                 title.value = resp.title;
-            }
-
-            if (resp.description) {
                 description.value = resp.description;
+                validateForm();
             }
         })
         .catch(err => {
             console.log("Error", err)
         })
         .finally(_ => {
-            scrape.disabled = false;
-            url.disabled = false;
-            title.disabled = false;
-            description.disabled = false;
-            loader.classList.add("hidden");
+            inputs.forEach((input) => {
+                input.disabled = false;
+            });
+
+            fetchingMessage.classList.add("hidden");
+            fetchingMessage.innerHTML = "Metadata fetched";
         })
+}
+
+const initializeFormValidation = () => {
+    submitButton = bookmarkForm.querySelector("button[type=submit]");
+    requiredFields = bookmarkForm.querySelectorAll("[required]");
+
+    requiredFields.forEach((input) => {
+        if (input.value == "") {
+            submitButton.disabled = true;
+        }
+
+        input.addEventListener("keyup", (e) => {
+            validateForm();
+        });
+
+        input.addEventListener("change", (e) => {
+            validateForm();
+        });
     });
+
+    validateForm()
+}
+
+export const validateForm = () => {
+    var isValid = true;
+    requiredFields.forEach((input) => {
+        if (input.value == "") {
+            isValid = false;
+            input.setAttribute("aria-invalid", "true");
+            input.classList.add("invalid");
+        } else {
+            input.setAttribute("aria-invalid", "false");
+            input.classList.remove("invalid");
+        }
+    })
+    submitButton.disabled = !isValid
 }

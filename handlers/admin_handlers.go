@@ -232,13 +232,10 @@ func (h *Handler) HandleBookmarkDelete(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		action := r.Form.Get("action")
-		if action == "delete" {
-			err = h.bookmarkRepo.Delete(bookmark.ID)
-			if err != nil {
-				h.internalServerError(w, "Failed to delete a bookmark", err)
-				return
-			}
+		err = h.bookmarkRepo.Delete(bookmark.ID)
+		if err != nil {
+			h.internalServerError(w, "Failed to delete a bookmark", err)
+			return
 		}
 
 		http.Redirect(w, r, h.appConf.BaseURL, http.StatusFound)
