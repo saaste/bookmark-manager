@@ -2,3 +2,4 @@ bookmarks.db
 config.yml
 docker-compose.yml
 cover.out
+bookmarks/test_data/test.db

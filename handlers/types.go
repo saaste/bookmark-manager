@@ -31,7 +31,7 @@ type templateData struct {
 type adminTemplateData struct {
 	templateData
 	Errors   map[string]string
-	Bookmark bookmarks.Bookmark
+	Bookmark *bookmarks.Bookmark
 	Tags     string
 }
 

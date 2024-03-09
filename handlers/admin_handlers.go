@@ -66,7 +66,7 @@ func (h *Handler) HandleBookmarkAdd(w http.ResponseWriter, r *http.Request) {
 			IsAuthenticated: isAuthenticated,
 		},
 		Errors:   make(map[string]string),
-		Bookmark: bookmarks.Bookmark{},
+		Bookmark: &bookmarks.Bookmark{},
 		Tags:     "",
 	}
 
@@ -144,7 +144,7 @@ func (h *Handler) HandleBookmarkEdit(w http.ResponseWriter, r *http.Request) {
 			IsAuthenticated: isAuthenticated,
 		},
 		Errors:   make(map[string]string),
-		Bookmark: *bookmark,
+		Bookmark: bookmark,
 		Tags:     strings.Join(bookmark.Tags, " "),
 	}
 
@@ -222,7 +222,7 @@ func (h *Handler) HandleBookmarkDelete(w http.ResponseWriter, r *http.Request) {
 			CurrentURL:      h.getCurrentURL(r, h.appConf),
 			IsAuthenticated: isAuthenticated,
 		},
-		Bookmark: *bookmark,
+		Bookmark: bookmark,
 	}
 
 	if r.Method == http.MethodPost {
