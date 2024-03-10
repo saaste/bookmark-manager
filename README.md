@@ -43,5 +43,14 @@ Bookmark Manager can send a notification when it detects broken bookmarks. Curre
 the `gotify_enabled` setting to `true` and set `gotify_url` and `gotify_token` settings to match your
 environment.
 
+## Screenshots
+UI for guests
+
+![Screenshot showing UI for guest users](docs/screenshot-guest.png "UI for guests")
+
+UI for authenticated users
+
+![Screenshot showing UI for authenticated users](docs/screenshot-authenticated.png "UI for authenticated users")
+
 ## Plans for the future
 - Themes
