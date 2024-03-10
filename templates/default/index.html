@@ -14,7 +14,15 @@
     <ul>
         {{ range .Bookmarks }} 
         <li class="bookmark">
-            <h3 class="title"><a href="{{ .URL }}" target="_blank">{{ .Title }}</a></h3>
+            <div class="flex horizonal">
+                <h3 class="title"><a href="{{ .URL }}" target="_blank">{{ .Title }}</a></h3>
+                {{ if $.IsAuthenticated }}
+                <div class="warnings">
+                    {{ if eq .IsWorking false }}<img src="{{ $.BaseURL }}/assets/warning.png" class="warning-icon" alt="Exclamation point icon" title="Bookmark is broken">{{ end }}
+                    {{ if eq .IsPrivate true }}<img src="{{ $.BaseURL }}/assets/lock.png" class="private-icon" alt="Lock icon" title="Bookmark is private">{{ end }}
+                </div>
+                {{ end }}
+            </div>
             
             {{ if .Description }}
                 <p class="description">{{ .Description }}</p>

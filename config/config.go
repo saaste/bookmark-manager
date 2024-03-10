@@ -21,6 +21,7 @@ type AppConfig struct {
 	Template          string `yaml:"template"`
 	CheckInterval     int    `yaml:"check_interval,omitempty"`
 	CheckRunOnStartup bool   `yaml:"check_on_app_start,omitempty"`
+	GotifyEnabled     bool   `yaml:"gotify_enabled,omitempty"`
 	GotifyURL         string `yaml:"gotify_url,omitempty"`
 	GotifyToken       string `yaml:"gotify_token,omitempty"`
 }

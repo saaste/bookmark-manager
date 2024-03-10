@@ -12,6 +12,7 @@ type Bookmark struct {
 	IsPrivate   bool
 	Created     time.Time
 	Tags        []string
+	IsWorking   bool
 }
 
 type BookmarkResult struct {

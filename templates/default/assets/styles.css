@@ -113,6 +113,7 @@ button[disabled]:hover {
 
 #header .content {
     display: flex;
+    flex-wrap: wrap;
     align-items: baseline;
     max-width: var(--content-max-width);
     padding-bottom: 1em;
@@ -120,6 +121,9 @@ button[disabled]:hover {
 
 #header .content .auth-nav {
     white-space: nowrap;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5em;
 }
 
 #header h1 {
@@ -197,6 +201,7 @@ button[disabled]:hover {
 
 .bookmark h3 {
     text-shadow: none;
+    flex: auto;
 }
 
 .title {
@@ -259,9 +264,12 @@ button[disabled]:hover {
     text-shadow: 0 0 5px rgba(124, 222, 124, 0.7);;
 }
 
-.feed-icon {
+.feed-icon, .private-icon, .warning-icon {
     width: 1.2em;
     height: 1.2em;
+}
+
+.feed-icon {
     margin-right: 1em;
 }
 

@@ -55,6 +55,7 @@ func main() {
 	r.Get("/admin/bookmarks", handler.HandlePrivateBookmarks)
 	r.Get("/admin/bookmarks/add", handler.HandleBookmarkAdd)
 	r.Post("/admin/bookmarks/add", handler.HandleBookmarkAdd)
+	r.Get("/admin/bookmarks/broken", handler.HandleBrokenBookmarks)
 	r.Get("/admin/bookmarks/{bookmarkID}", handler.HandleBookmarkEdit)
 	r.Post("/admin/bookmarks/{bookmarkID}", handler.HandleBookmarkEdit)
 	r.Get("/admin/bookmarks/{bookmarkID}/delete", handler.HandleBookmarkDelete)
@@ -102,7 +103,7 @@ func checkBookmarks(appConfig *config.AppConfig, checker *bookmarks.BookmarkChec
 		log.Printf("ERROR: checking bookmarks failed: %v\n", err)
 	}
 
-	if len(bmErrors) > 0 {
+	if appConfig.GotifyEnabled && len(bmErrors) > 0 {
 		message := ""
 
 		for _, bmError := range bmErrors {
@@ -112,7 +113,7 @@ func checkBookmarks(appConfig *config.AppConfig, checker *bookmarks.BookmarkChec
 			message += fmt.Sprintln()
 		}
 
-		err := notifier.SendGotifyMessage(fmt.Sprintf("%s: Invalid Bookmarks", appConfig.SiteName), message)
+		err := notifier.SendGotifyMessage(fmt.Sprintf("%s: Broken Bookmarks", appConfig.SiteName), message)
 		if err != nil {
 			log.Printf("ERROR: Sending gotify notification failed: %v", err)
 		}

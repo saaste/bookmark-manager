@@ -26,6 +26,9 @@
                 {{ if .IsAuthenticated }}
                 <a href="{{ .BaseURL }}/admin/bookmarks/add">Add Bookmark</a> |
                 <a href="{{ .BaseURL }}/admin/bookmarks">Private Bookmarks</a> |
+                {{ if .BrokenBookmarks }}
+                <a href="{{ .BaseURL }}/admin/bookmarks/broken" class="warning">Broken Bookmarks</a> |
+                {{ end}}
                 <a href="{{ .BaseURL }}/logout">Log out</a>
                 {{ else }}
                 <a href="{{ .BaseURL }}/login">Log in</a>

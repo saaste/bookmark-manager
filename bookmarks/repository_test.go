@@ -329,6 +329,37 @@ func TestGetAllWithoutPagination(t *testing.T) {
 	assert.Equal(t, bookmark1.ID, result[3].ID)
 }
 
+func TestGetBrokenBookmarks(t *testing.T) {
+	db := initTestDatabase(t)
+	defer db.Close()
+
+	repo := NewSqliteRepository(db)
+
+	bookmark1 := createBookmark(false)
+	_, err := repo.Create(bookmark1)
+	assert.Nil(t, err)
+
+	bookmark2 := createBookmark(false)
+	_, err = repo.Create(bookmark2)
+	assert.Nil(t, err)
+
+	bookmark3 := createBookmark(true)
+	bookmark3.IsWorking = false
+	_, err = repo.Create(bookmark3)
+	assert.Nil(t, err)
+
+	bookmark4 := createBookmark(true)
+	bookmark4.IsWorking = false
+	_, err = repo.Create(bookmark4)
+	assert.Nil(t, err)
+
+	result, err := repo.GetBrokenBookmarks()
+	assert.Nil(t, err)
+	assert.Len(t, result, 2)
+	assert.Equal(t, bookmark4.ID, result[0].ID)
+	assert.Equal(t, bookmark3.ID, result[1].ID)
+}
+
 func initTestDatabase(t *testing.T) *sql.DB {
 	db, err := sql.Open("sqlite3", "test_data/test.db")
 	assert.Nil(t, err)
@@ -353,6 +384,7 @@ func createBookmark(isPrivate bool) *Bookmark {
 		IsPrivate:   isPrivate,
 		Created:     removeNanoseconds(time.Now()),
 		Tags:        []string{"tag1", "tag2"},
+		IsWorking:   true,
 	}
 }
 

@@ -32,13 +32,16 @@ go run .
 Be default, the app is listening to port 8000. You can change this in the `config.yml`.
 
 ## Scheduled bookmark check
-The app can check for invalid bookmarks, but this feature is disabled by default.
-To enable the check, set `check_interval` configuration in `config.yml` to `1` or more. If you want to run the check when the app starts, set `check_on_app_start` configuration to `true`.
+The app can check for broken bookmarks, but this feature is disabled by default.
+To enable the check, set the `check_interval` setting in `config.yml` to `1` or more.
+If you want the check to run when the app starts, set the `check_on_app_start` setting to `true`.
 
-Bookmark Manager sends a notification if invalid bookmarks are found. Currently, only
-[Gotify](https://gotify.net/) notifications are supported. If you don't have Gotify, please
-do not enable bookmark check. I'm planning to add email notifications in the future.
+Broken bookmarks are indicated by an exclamation point icon. Yuo will also see a *Broken Bookmarks* link in the top navigation bar, which will take you to a view listing all broken bookmarks. These are only visible if you are logged in.
+
+Bookmark Manager can send a notification when it detects broken bookmarks. Currently, only
+[Gotify](https://gotify.net/) notifications are supported. To enable notifications, set
+the `gotify_enabled` setting to `true` and set `gotify_url` and `gotify_token` settings to match your
+environment.
 
 ## Plans for the future
 - Themes
-- Email notifications
