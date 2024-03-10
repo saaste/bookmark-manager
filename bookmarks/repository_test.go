@@ -298,6 +298,37 @@ func TestGetTags(t *testing.T) {
 
 }
 
+func TestGetAllWithoutPagination(t *testing.T) {
+	db := initTestDatabase(t)
+	defer db.Close()
+
+	repo := NewSqliteRepository(db)
+
+	bookmark1 := createBookmark(false)
+	_, err := repo.Create(bookmark1)
+	assert.Nil(t, err)
+
+	bookmark2 := createBookmark(false)
+	_, err = repo.Create(bookmark2)
+	assert.Nil(t, err)
+
+	bookmark3 := createBookmark(true)
+	_, err = repo.Create(bookmark3)
+	assert.Nil(t, err)
+
+	bookmark4 := createBookmark(true)
+	_, err = repo.Create(bookmark4)
+	assert.Nil(t, err)
+
+	result, err := repo.GetAllWithoutPagination()
+	assert.Nil(t, err)
+	assert.Len(t, result, 4)
+	assert.Equal(t, bookmark4.ID, result[0].ID)
+	assert.Equal(t, bookmark3.ID, result[1].ID)
+	assert.Equal(t, bookmark2.ID, result[2].ID)
+	assert.Equal(t, bookmark1.ID, result[3].ID)
+}
+
 func initTestDatabase(t *testing.T) *sql.DB {
 	db, err := sql.Open("sqlite3", "test_data/test.db")
 	assert.Nil(t, err)

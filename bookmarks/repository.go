@@ -23,6 +23,7 @@ type Repository interface {
 	GetByTags(showPrivate bool, containsTags []string, page, pageSize int) (*BookmarkResult, error)
 	GetByKeyword(showPrivate bool, q string, page, pageSize int) (*BookmarkResult, error)
 	GetTags(showPrivate bool) ([]string, error)
+	GetAllWithoutPagination() ([]*Bookmark, error)
 }
 
 type SqliteRepository struct {
@@ -359,6 +360,32 @@ func (r *SqliteRepository) GetTags(showPrivate bool) ([]string, error) {
 	}
 
 	return results, nil
+}
+
+func (r *SqliteRepository) GetAllWithoutPagination() ([]*Bookmark, error) {
+	query := "SELECT id, url, title, description, is_private, created FROM bookmarks ORDER BY created DESC, id DESC"
+	rows, err := r.db.Query(query)
+	if err != nil {
+		return nil, fmt.Errorf("fetching bookmarks failed: %w", err)
+	}
+	defer rows.Close()
+
+	bookmarks := make([]*Bookmark, 0)
+	for rows.Next() {
+		bm, err := r.scanBookmarkRow(rows)
+		if err != nil {
+			return nil, err
+		}
+		bookmarks = append(bookmarks, bm)
+	}
+
+	err = r.fetchAndSetBookmarkTags(bookmarks)
+	if err != nil {
+		return nil, err
+	}
+
+	return bookmarks, nil
+
 }
 
 func (r *SqliteRepository) getTagsByBookmarkIDs(bookmarkIDs []int64) (map[int64][]string, error) {

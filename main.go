@@ -6,14 +6,17 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/saaste/bookmark-manager/auth"
+	"github.com/saaste/bookmark-manager/bookmarks"
 	"github.com/saaste/bookmark-manager/config"
 	"github.com/saaste/bookmark-manager/handlers"
 	"github.com/saaste/bookmark-manager/migrations"
+	"github.com/saaste/bookmark-manager/notifications"
 )
 
 func main() {
@@ -34,6 +37,8 @@ func main() {
 	if err != nil {
 		log.Fatalf("loading application config failed: %v", err)
 	}
+
+	go initializeBookmarkChecker(appConf, db)
 
 	auth := auth.NewAuthenticator(appConf)
 	handler := handlers.NewHandler(db, appConf, auth)
@@ -65,5 +70,51 @@ func main() {
 		log.Println("Server closed")
 	} else if err != nil {
 		log.Fatalf("Starting server failed: %v", err)
+	}
+}
+
+func initializeBookmarkChecker(appConfig *config.AppConfig, db *sql.DB) {
+	if appConfig.CheckInterval < 1 {
+		log.Println("Bookmark check is disabled. To enable, set check_interval value in the config to 1 or more")
+		return
+	}
+
+	repo := bookmarks.NewSqliteRepository(db)
+	checker := bookmarks.NewBookmarkChecker(repo)
+	notifier := notifications.NewNotifier(appConfig)
+
+	interval := time.Duration(appConfig.CheckInterval) * time.Hour
+	log.Printf("Bookmark check is enabled, running every %d hour(s)\n", int(interval.Hours()))
+
+	if appConfig.CheckRunOnStartup {
+		log.Printf("Bookmark check is configured to run on app start. Running...")
+		checkBookmarks(appConfig, checker, notifier)
+	}
+
+	for range time.Tick(interval) {
+		checkBookmarks(appConfig, checker, notifier)
+	}
+}
+
+func checkBookmarks(appConfig *config.AppConfig, checker *bookmarks.BookmarkChecker, notifier *notifications.Notifier) {
+	bmErrors, err := checker.CheckBookbarks()
+	if err != nil {
+		log.Printf("ERROR: checking bookmarks failed: %v\n", err)
+	}
+
+	if len(bmErrors) > 0 {
+		message := ""
+
+		for _, bmError := range bmErrors {
+			message += fmt.Sprintln(bmError.Title)
+			message += fmt.Sprintln(bmError.URL)
+			message += fmt.Sprintln(bmError.Message)
+			message += fmt.Sprintln()
+		}
+
+		err := notifier.SendGotifyMessage(fmt.Sprintf("%s: Invalid Bookmarks", appConfig.SiteName), message)
+		if err != nil {
+			log.Printf("ERROR: Sending gotify notification failed: %v", err)
+		}
 	}
 }
