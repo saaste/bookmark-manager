@@ -23,6 +23,8 @@ type Repository interface {
 	GetByTags(showPrivate bool, containsTags []string, page, pageSize int) (*BookmarkResult, error)
 	GetByKeyword(showPrivate bool, q string, page, pageSize int) (*BookmarkResult, error)
 	GetTags(showPrivate bool) ([]string, error)
+	GetAllWithoutPagination() ([]*Bookmark, error)
+	GetBrokenBookmarks() ([]*Bookmark, error)
 }
 
 type SqliteRepository struct {
@@ -44,8 +46,8 @@ func (r *SqliteRepository) Create(bookmark *Bookmark) (*Bookmark, error) {
 	defer tx.Rollback()
 
 	res, err := tx.Exec(
-		"INSERT INTO bookmarks (url, title, description, is_private, created) VALUES (?, ?, ?, ?, ?)",
-		bookmark.URL, bookmark.Title, bookmark.Description, bookmark.IsPrivate, bookmark.Created.UTC().Format(time.RFC3339))
+		"INSERT INTO bookmarks (url, title, description, is_private, created, is_working) VALUES (?, ?, ?, ?, ?, ?)",
+		bookmark.URL, bookmark.Title, bookmark.Description, bookmark.IsPrivate, bookmark.Created.UTC().Format(time.RFC3339), bookmark.IsWorking)
 	if err != nil {
 		return nil, fmt.Errorf("sql exec failed: %w", err)
 	}
@@ -77,8 +79,8 @@ func (r *SqliteRepository) Update(bookmark *Bookmark) (*Bookmark, error) {
 	defer tx.Rollback()
 
 	_, err = tx.Exec(
-		"UPDATE bookmarks SET url = ?, title = ?, description = ?, is_private = ? WHERE id = ?",
-		bookmark.URL, bookmark.Title, bookmark.Description, bookmark.IsPrivate, bookmark.ID)
+		"UPDATE bookmarks SET url = ?, title = ?, description = ?, is_private = ?, is_working = ? WHERE id = ?",
+		bookmark.URL, bookmark.Title, bookmark.Description, bookmark.IsPrivate, bookmark.IsWorking, bookmark.ID)
 	if err != nil {
 		return nil, fmt.Errorf("sql exec failed: %w", err)
 	}
@@ -97,11 +99,11 @@ func (r *SqliteRepository) Update(bookmark *Bookmark) (*Bookmark, error) {
 }
 
 func (r *SqliteRepository) Get(id int64) (*Bookmark, error) {
-	row := r.db.QueryRow("SELECT id, url, title, description, is_private, created FROM bookmarks WHERE id = ?", id)
+	row := r.db.QueryRow("SELECT id, url, title, description, is_private, created, is_working FROM bookmarks WHERE id = ?", id)
 
 	var bm Bookmark
 	var created string
-	if err := row.Scan(&bm.ID, &bm.URL, &bm.Title, &bm.Description, &bm.IsPrivate, &created); err != nil {
+	if err := row.Scan(&bm.ID, &bm.URL, &bm.Title, &bm.Description, &bm.IsPrivate, &created, &bm.IsWorking); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, ErrNotFound
 		}
@@ -153,7 +155,7 @@ func (r *SqliteRepository) GetAll(showPrivate bool, page int, pageSize int) (*Bo
 		condition = ""
 	}
 
-	query := fmt.Sprintf("SELECT id, url, title, description, is_private, created FROM bookmarks %s ORDER BY created DESC, id DESC LIMIT ?, ?", condition)
+	query := fmt.Sprintf("SELECT id, url, title, description, is_private, created, is_working FROM bookmarks %s ORDER BY created DESC, id DESC LIMIT ?, ?", condition)
 	offset := r.calculateOffset(page, pageSize)
 	rows, err := r.db.Query(query, offset, pageSize)
 	if err != nil {
@@ -190,7 +192,7 @@ func (r *SqliteRepository) GetAll(showPrivate bool, page int, pageSize int) (*Bo
 func (r *SqliteRepository) GetPrivate(page, pageSize int) (*BookmarkResult, error) {
 	offset := r.calculateOffset(page, pageSize)
 
-	rows, err := r.db.Query("SELECT id, url, title, description, is_private, created FROM bookmarks WHERE is_private = true ORDER BY created DESC, id DESC LIMIT ?, ?", offset, pageSize)
+	rows, err := r.db.Query("SELECT id, url, title, description, is_private, created, is_working FROM bookmarks WHERE is_private = true ORDER BY created DESC, id DESC LIMIT ?, ?", offset, pageSize)
 	if err != nil {
 		return nil, fmt.Errorf("db query failed: %w", err)
 	}
@@ -247,7 +249,7 @@ func (r *SqliteRepository) GetByTags(showPrivate bool, containsTags []string, pa
 	}
 
 	condition := builder.String()
-	query := fmt.Sprintf("SELECT id, url, title, description, is_private, created FROM bookmarks %s ORDER BY created DESC, id DESC LIMIT ?, ?", condition)
+	query := fmt.Sprintf("SELECT id, url, title, description, is_private, created, is_working FROM bookmarks %s ORDER BY created DESC, id DESC LIMIT ?, ?", condition)
 
 	offset := r.calculateOffset(page, pageSize)
 	params = append(params, offset, pageSize)
@@ -304,7 +306,7 @@ func (r *SqliteRepository) GetByKeyword(showPrivate bool, q string, page, pageSi
 	offset := r.calculateOffset(page, pageSize)
 	params = append(params, offset, pageSize)
 
-	query := fmt.Sprintf("SELECT id, url, title, description, is_private, created FROM bookmarks %s ORDER BY created DESC, id DESC LIMIT ?, ?", condition)
+	query := fmt.Sprintf("SELECT id, url, title, description, is_private, created, is_working FROM bookmarks %s ORDER BY created DESC, id DESC LIMIT ?, ?", condition)
 	rows, err := r.db.Query(query, params...)
 	if err != nil {
 		return nil, fmt.Errorf("db query failed: %w", err)
@@ -359,6 +361,56 @@ func (r *SqliteRepository) GetTags(showPrivate bool) ([]string, error) {
 	}
 
 	return results, nil
+}
+
+func (r *SqliteRepository) GetAllWithoutPagination() ([]*Bookmark, error) {
+	query := "SELECT id, url, title, description, is_private, created, is_working FROM bookmarks ORDER BY created DESC, id DESC"
+	rows, err := r.db.Query(query)
+	if err != nil {
+		return nil, fmt.Errorf("fetching bookmarks failed: %w", err)
+	}
+	defer rows.Close()
+
+	bookmarks := make([]*Bookmark, 0)
+	for rows.Next() {
+		bm, err := r.scanBookmarkRow(rows)
+		if err != nil {
+			return nil, err
+		}
+		bookmarks = append(bookmarks, bm)
+	}
+
+	err = r.fetchAndSetBookmarkTags(bookmarks)
+	if err != nil {
+		return nil, err
+	}
+
+	return bookmarks, nil
+}
+
+func (r *SqliteRepository) GetBrokenBookmarks() ([]*Bookmark, error) {
+	query := "SELECT id, url, title, description, is_private, created, is_working FROM bookmarks WHERE is_working = false ORDER BY created DESC, id DESC"
+	rows, err := r.db.Query(query)
+	if err != nil {
+		return nil, fmt.Errorf("fetching bookmarks failed: %w", err)
+	}
+	defer rows.Close()
+
+	bookmarks := make([]*Bookmark, 0)
+	for rows.Next() {
+		bm, err := r.scanBookmarkRow(rows)
+		if err != nil {
+			return nil, err
+		}
+		bookmarks = append(bookmarks, bm)
+	}
+
+	err = r.fetchAndSetBookmarkTags(bookmarks)
+	if err != nil {
+		return nil, err
+	}
+
+	return bookmarks, nil
 }
 
 func (r *SqliteRepository) getTagsByBookmarkIDs(bookmarkIDs []int64) (map[int64][]string, error) {
@@ -435,7 +487,7 @@ func (r *SqliteRepository) getRowCount(row *sql.Row, pageSize int) (int, error) 
 func (r *SqliteRepository) scanBookmarkRow(rows *sql.Rows) (*Bookmark, error) {
 	var bm Bookmark
 	var created string
-	if err := rows.Scan(&bm.ID, &bm.URL, &bm.Title, &bm.Description, &bm.IsPrivate, &created); err != nil {
+	if err := rows.Scan(&bm.ID, &bm.URL, &bm.Title, &bm.Description, &bm.IsPrivate, &created, &bm.IsWorking); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, ErrNotFound
 		}

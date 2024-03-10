@@ -30,10 +30,16 @@
             <input type="checkbox" name="is_private" id="is_private" value="1" {{ if .Bookmark.IsPrivate }}checked{{end}} /><br />
             <label for="is_private">Private</label>
         </div>
+
+        <div class="input-group horizontal">
+            <input type="checkbox" name="is_working" id="is_working" value="1" {{ if .Bookmark.IsWorking }}checked{{end}} /><br />
+            <label for="is_working">Is Working</label>
+        </div>
     
         <div class="input-group">
             <label for="tags">Tags (separated with spaces)</label>
-            <input type="text" name="tags" id="tags"  value="{{ .Tags }}" /><br />
+            <input type="text" name="tags" id="tags"  value="{{ .Tags }}" autocomplete="off" /><br />
+            <ul id="tag-suggestions" class="autocomplete"></ul>
         </div>
 
         <button type="submit">Save changes</button>

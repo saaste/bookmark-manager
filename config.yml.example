@@ -1,3 +1,7 @@
+# ------------------
+# SITE CONFIGURATION
+# ------------------
+
 # Visible in the header, title and in RSS feed
 site_name: Bookmark Manager
 
@@ -21,3 +25,27 @@ port: 8000
 
 # DON'T CHANGE! NOT SUPPORTED YET!
 template: default
+
+# -------------
+# BOOKMARK CHECK
+# --------------
+
+# How often bookmarks are checked (in hours, 0 to disable)
+#check_interval: 24
+
+# Run bookmarks check when app starts
+#check_on_app_start: false
+
+# -------------
+# Notifications
+# --------------
+
+# Use Gotify notifications
+gotify_enabled: false
+
+# Gotify base url
+# gotify_url: https://mygotifyinstance.com
+
+# Gotify app token
+# gotify_token: my-gotify-app-token
+

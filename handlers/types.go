@@ -26,6 +26,7 @@ type templateData struct {
 	TagFilter       string
 	TextFilter      string
 	Pages           []Page
+	BrokenBookmarks []*bookmarks.Bookmark
 }
 
 type adminTemplateData struct {

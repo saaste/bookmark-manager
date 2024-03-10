@@ -49,6 +49,41 @@ func (h *Handler) HandlePrivateBookmarks(w http.ResponseWriter, r *http.Request)
 	h.parseTemplateWithFunc("index.html", r, w, data)
 }
 
+func (h *Handler) HandleBrokenBookmarks(w http.ResponseWriter, r *http.Request) {
+	isAuthenticated := h.isAuthenticated(r)
+	if !isAuthenticated {
+		http.Redirect(w, r, fmt.Sprintf("%s/login", h.appConf.BaseURL), http.StatusFound)
+		return
+	}
+
+	bookmarks, err := h.bookmarkRepo.GetBrokenBookmarks()
+	if err != nil {
+		h.internalServerError(w, "Failed to fetch bookmarks", err)
+		return
+	}
+
+	allTags, err := h.bookmarkRepo.GetTags(isAuthenticated)
+	if err != nil {
+		h.internalServerError(w, "Failed to fetch tags", err)
+		return
+	}
+
+	data := templateData{
+		SiteName:        h.appConf.SiteName,
+		Description:     h.appConf.Description,
+		Title:           "Broken Bookmarks",
+		BaseURL:         h.appConf.BaseURL,
+		CurrentURL:      h.getCurrentURL(r, h.appConf),
+		IsAuthenticated: isAuthenticated,
+		PrivateOnly:     true,
+		Bookmarks:       bookmarks,
+		Tags:            allTags,
+		BrokenBookmarks: bookmarks,
+	}
+
+	h.parseTemplateWithFunc("index.html", r, w, data)
+}
+
 func (h *Handler) HandleBookmarkAdd(w http.ResponseWriter, r *http.Request) {
 	isAuthenticated := h.isAuthenticated(r)
 	if !isAuthenticated {
@@ -90,6 +125,7 @@ func (h *Handler) HandleBookmarkAdd(w http.ResponseWriter, r *http.Request) {
 		data.Bookmark.Description = r.Form.Get("description")
 		data.Bookmark.IsPrivate = r.Form.Get("is_private") == "1"
 		data.Bookmark.Created = time.Now().UTC()
+		data.Bookmark.IsWorking = true
 
 		data.Tags = r.Form.Get("tags")
 		data.Bookmark.Tags = strings.Split(data.Tags, " ")
@@ -167,6 +203,7 @@ func (h *Handler) HandleBookmarkEdit(w http.ResponseWriter, r *http.Request) {
 		data.Bookmark.Title = r.Form.Get("title")
 		data.Bookmark.Description = r.Form.Get("description")
 		data.Bookmark.IsPrivate = r.Form.Get("is_private") == "1"
+		data.Bookmark.IsWorking = r.Form.Get("is_working") == "1"
 		data.Bookmark.Created = time.Now().UTC()
 
 		data.Tags = r.Form.Get("tags")
