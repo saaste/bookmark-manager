@@ -265,6 +265,19 @@ button[disabled]:hover {
     margin-right: 1em;
 }
 
+.autocomplete {
+    background: #222;
+    position: absolute;
+    top: 0;
+}
+
+.autocomplete li {
+    padding: 0.5em;
+}
+.autocomplete li:focus {
+    background: #444;
+}
+
 .mobile-only {
     display: none;
 }

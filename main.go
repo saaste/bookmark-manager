@@ -55,6 +55,7 @@ func main() {
 	r.Get("/admin/bookmarks/{bookmarkID}/delete", handler.HandleBookmarkDelete)
 	r.Post("/admin/bookmarks/{bookmarkID}/delete", handler.HandleBookmarkDelete)
 	r.Get("/api/metadata", handler.HandleAPIMetadata)
+	r.Get("/api/tags", handler.HandleAPITags)
 
 	handler.ServeFiles(r, "/assets", http.Dir(fmt.Sprintf("templates/%s/assets", appConf.Template)))
 

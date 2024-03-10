@@ -70,3 +70,26 @@ func (h *Handler) HandleAPIMetadata(w http.ResponseWriter, r *http.Request) {
 
 	render.JSON(w, r, meta)
 }
+
+func (h *Handler) HandleAPITags(w http.ResponseWriter, r *http.Request) {
+	isAuthenticated := h.authenticateAPI(w, r)
+	if !isAuthenticated {
+		return
+	}
+
+	tags, err := h.bookmarkRepo.GetTags(isAuthenticated)
+	if err != nil {
+		h.internalServerError(w, "failed to fetch tags", err)
+		return
+	}
+
+	type TagsResponse struct {
+		Tags []string `json:"tags"`
+	}
+
+	response := TagsResponse{
+		Tags: tags,
+	}
+
+	render.JSON(w, r, response)
+}

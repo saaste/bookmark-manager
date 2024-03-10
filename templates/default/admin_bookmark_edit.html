@@ -33,7 +33,8 @@
     
         <div class="input-group">
             <label for="tags">Tags (separated with spaces)</label>
-            <input type="text" name="tags" id="tags"  value="{{ .Tags }}" /><br />
+            <input type="text" name="tags" id="tags"  value="{{ .Tags }}" autocomplete="off" /><br />
+            <ul id="tag-suggestions" class="autocomplete"></ul>
         </div>
 
         <button type="submit">Save changes</button>
