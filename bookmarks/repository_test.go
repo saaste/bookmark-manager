@@ -376,6 +376,8 @@ func initTestDatabase(t *testing.T) *sql.DB {
 	return db
 }
 
+// TODO: Destroy database after test run
+
 func createBookmark(isPrivate bool) *Bookmark {
 	return &Bookmark{
 		URL:         "https://example.org",

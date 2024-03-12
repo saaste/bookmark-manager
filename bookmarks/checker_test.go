@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/saaste/bookmark-manager/config"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -13,7 +14,7 @@ type MockHttp struct {
 	getError error
 }
 
-func (h *MockHttp) Get(url string) (resp *http.Response, err error) {
+func (h MockHttp) Do(req *http.Request) (resp *http.Response, err error) {
 	if h.getError != nil {
 		return nil, h.getError
 	}
@@ -79,8 +80,11 @@ func TestCheckBookbarks(t *testing.T) {
 			}
 
 			checker := &BookmarkChecker{
-				repo: repo,
-				get:  client.Get,
+				repo:   repo,
+				client: client,
+				appConfig: &config.AppConfig{
+					AppVersion: "test-version",
+				},
 			}
 
 			bookmarkErrors, err := checker.CheckBookbarks()
