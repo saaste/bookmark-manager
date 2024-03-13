@@ -158,7 +158,7 @@ const handleFormInputFocus = (e) => {
 
 const handleWindowResize = (e) => {
     let coords = tagsInput.getBoundingClientRect();
-    tagSuggestions.style.top = `${coords.bottom + 2}px`;
+    tagSuggestions.style.top = `${coords.bottom + 2 + window.scrollY}px`;
 }
 
 const initializeFormValidation = () => {
