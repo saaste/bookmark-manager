@@ -8,6 +8,12 @@ site_name: Bookmark Manager
 # Used in meta tag and in RSS feed
 description: My personal bookmark collection
 
+# Author's name. Shown in feeds
+author_name: ""
+
+# Author's email address. Shown in feeds
+author_email: ""
+
 # Base URL of the site
 base_url: http://localhost:8000                 
 

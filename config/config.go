@@ -13,7 +13,7 @@ const (
 
 type AppConfig struct {
 	SiteName          string `yaml:"site_name"`
-	Description       string `uaml:"description"`
+	Description       string `yaml:"description"`
 	BaseURL           string `yaml:"base_url"`
 	Password          string `yaml:"password"`
 	Secret            string `yaml:"secret"`
@@ -26,6 +26,8 @@ type AppConfig struct {
 	GotifyURL         string `yaml:"gotify_url,omitempty"`
 	GotifyToken       string `yaml:"gotify_token,omitempty"`
 	AppVersion        string
+	AuthorName        string `yaml:"author_name,omitempty"`
+	AuthorEmail       string `yaml:"author_email,omitempty"`
 }
 
 func LoadConfig() (*AppConfig, error) {

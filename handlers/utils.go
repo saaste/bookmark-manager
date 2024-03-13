@@ -27,13 +27,23 @@ func (h *Handler) getBookmarksWithPagination(isAuthenticated bool, q, tags strin
 }
 
 func (h *Handler) parseTemplateWithFunc(templateFile string, r *http.Request, w http.ResponseWriter, data any) {
-	t, err := template.New("foo").
+	t, err := template.New("").
 		Funcs(template.FuncMap{
 			"paginationUrl": func(pageNumber int) string {
 				return h.getCurrentURIWithParam(r, "page", pageNumber)
 			},
-			"feedUrl": func() string {
-				return h.getFeedURL(r)
+			"feedUrl": func(feedType string) string {
+				switch strings.ToLower(feedType) {
+				case "atom":
+					return h.getFeedURL(r, FeedTypeAtom)
+				case "rss":
+					return h.getFeedURL(r, FeedTypeRSS)
+				case "json":
+					return h.getFeedURL(r, FeedTypeJSON)
+				default:
+					return "invalid feed type"
+				}
+
 			},
 			"anchorUrl": func(id string) string {
 				return h.getAnchorURL(r, id)
@@ -110,17 +120,27 @@ func (h *Handler) getAnchorURL(r *http.Request, id string) string {
 	return fmt.Sprintf("%s#%s", r.RequestURI, id)
 }
 
-func (h *Handler) getFeedURL(r *http.Request) string {
+func (h *Handler) getFeedURL(r *http.Request, feedType FeedType) string {
 	q := r.URL.Query().Get("q")
 	rawQuery := ""
 	if q != "" {
 		rawQuery = fmt.Sprintf("q=%s", q)
 	}
 
+	var feedPath string
+	switch feedType {
+	case FeedTypeAtom:
+		feedPath = fmt.Sprintf("%s/atom.xml", strings.TrimSuffix(r.URL.Path, "/"))
+	case FeedTypeRSS:
+		feedPath = fmt.Sprintf("%s/rss.xml", strings.TrimSuffix(r.URL.Path, "/"))
+	case FeedTypeJSON:
+		feedPath = fmt.Sprintf("%s/feed.json", strings.TrimSuffix(r.URL.Path, "/"))
+	}
+
 	url := url.URL{
 		Scheme:   r.URL.Scheme,
 		Host:     r.URL.Host,
-		Path:     fmt.Sprintf("%s/feed", strings.TrimSuffix(r.URL.Path, "/")),
+		Path:     feedPath,
 		RawQuery: rawQuery,
 	}
 	return url.String()

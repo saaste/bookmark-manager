@@ -13,7 +13,9 @@
     <title>{{ .Title }} | {{ .SiteName }}</title>
     <link rel="stylesheet" href="/assets/reset.css">
     <link rel="stylesheet" href="/assets/styles.css">
-    <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="{{ feedUrl }}">
+    <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="{{ feedUrl "rss" }}">
+    <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="{{ feedUrl "atom" }}">
+    <link rel="alternate" type="application/json" title="JSON Feed" href="{{ feedUrl "json" }}">
     <base href="{{ .BaseURL }}">
     <script type="module" src="/assets/app.js"></script>
     <script type="module" src="/assets/api.js"></script>

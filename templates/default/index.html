@@ -7,7 +7,7 @@
     <div class="header">
         <h2>{{ .Title }}</h2>
         {{ if .Bookmarks }}
-        <a href="{{ feedUrl }}"><img src="{{ .BaseURL }}/assets/feed.png" class="feed-icon" alt="RSS feed icon" title="Bookmarks feed"></a>
+        <a href="{{ feedUrl "rss" }}"><img src="{{ .BaseURL }}/assets/feed.png" class="feed-icon" alt="RSS feed icon" title="Bookmarks feed"></a>
         {{ end }}
     </div>
     {{ if .Bookmarks }}
