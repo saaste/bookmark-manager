@@ -281,8 +281,9 @@ button[disabled]:hover {
 
 .autocomplete li {
     padding: 0.5em;
+    cursor: pointer;
 }
-.autocomplete li:focus {
+.autocomplete li:focus, .autocomplete li:hover {
     background: #444;
 }
 
