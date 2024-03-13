@@ -12,6 +12,8 @@ for each tag. The app can also do [scheduled bookmark checks](#scheduled-bookmar
 Bookmark Manager aims to be as accessible as possible. It should have a pretty a quite good
 screen reader support, but if have an idea how to make it even better, feel free to file an issue!
 
+**The app is still under heavy development. Breaking changes are quite likely.**
+
 ## How to run
 1. Copy the following example files:
    - bookmarks.db.example ➔ bookmarks.db
