@@ -41,13 +41,13 @@ window.onload = () => {
     if (tagsInput) {
         tagsInput.addEventListener("keyup", handleTagsKeyUp);
         window.addEventListener("resize", handleWindowResize);
-        
+
         getTags(baseUrl).then(resp => {
             allTags = resp.tags;
         })
-        .catch(err => {
-            console.log("Error fetching tags", err);
-        })
+            .catch(err => {
+                console.log("Error fetching tags", err);
+            })
 
         handleWindowResize();
     }
@@ -58,7 +58,7 @@ const handleScrapeButtonClick = (e) => {
     inputs.forEach((input) => {
         input.disabled = true;
     });
-    
+
     fetchingMessage.innerHTML = "Fetching metadata";
     fetchingMessage.classList.remove("hidden");
 
@@ -99,6 +99,7 @@ const handleTagsKeyUp = (e) => {
         option.innerHTML = tag;
         option.setAttribute("tabindex", "0");
         option.addEventListener("keyup", handleTagSuggestionKeyUp);
+        option.addEventListener("click", handleTagSuggestionClick);
         tagOptions.push(option);
     })
 
@@ -139,6 +140,14 @@ const handleTagSuggestionKeyUp = (e) => {
     }
 }
 
+const handleTagSuggestionClick = (e) => {
+    let lastSpaceIndex = tagsInput.value.lastIndexOf(" ") + 1;
+    let inputValueWithoutTagPrefix = tagsInput.value.substr(0, lastSpaceIndex);
+    tagsInput.value = inputValueWithoutTagPrefix + e.target.innerHTML + " ";
+    tagsInput.focus();
+    tagSuggestions.replaceChildren();
+}
+
 const handleFormInputFocus = (e) => {
     if (e.target.id == "tags") {
         return;
@@ -149,7 +158,7 @@ const handleFormInputFocus = (e) => {
 
 const handleWindowResize = (e) => {
     let coords = tagsInput.getBoundingClientRect();
-    tagSuggestions.style.top = `${coords.bottom+2}px`;
+    tagSuggestions.style.top = `${coords.bottom + 2 + window.scrollY}px`;
 }
 
 const initializeFormValidation = () => {

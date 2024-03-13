@@ -7,7 +7,8 @@ import (
 )
 
 const (
-	confFile string = "config.yml"
+	confFile   string = "config.yml"
+	appVersion string = "0.0.1"
 )
 
 type AppConfig struct {
@@ -24,6 +25,7 @@ type AppConfig struct {
 	GotifyEnabled     bool   `yaml:"gotify_enabled,omitempty"`
 	GotifyURL         string `yaml:"gotify_url,omitempty"`
 	GotifyToken       string `yaml:"gotify_token,omitempty"`
+	AppVersion        string
 }
 
 func LoadConfig() (*AppConfig, error) {
@@ -37,6 +39,8 @@ func LoadConfig() (*AppConfig, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	appConfig.AppVersion = appVersion
 
 	return appConfig, nil
 }

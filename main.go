@@ -81,7 +81,7 @@ func initializeBookmarkChecker(appConfig *config.AppConfig, db *sql.DB) {
 	}
 
 	repo := bookmarks.NewSqliteRepository(db)
-	checker := bookmarks.NewBookmarkChecker(repo)
+	checker := bookmarks.NewBookmarkChecker(appConfig, repo, http.DefaultClient)
 	notifier := notifications.NewNotifier(appConfig)
 
 	interval := time.Duration(appConfig.CheckInterval) * time.Hour

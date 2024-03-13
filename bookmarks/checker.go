@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+
+	"github.com/saaste/bookmark-manager/config"
 )
 
 type BookmarkError struct {
@@ -12,15 +14,21 @@ type BookmarkError struct {
 	Message string
 }
 
-type BookmarkChecker struct {
-	repo Repository
-	get  func(url string) (resp *http.Response, err error)
+type HttpClient interface {
+	Do(*http.Request) (*http.Response, error)
 }
 
-func NewBookmarkChecker(repo Repository) *BookmarkChecker {
+type BookmarkChecker struct {
+	appConfig *config.AppConfig
+	repo      Repository
+	client    HttpClient
+}
+
+func NewBookmarkChecker(appConfig *config.AppConfig, repo Repository, client HttpClient) *BookmarkChecker {
 	return &BookmarkChecker{
-		repo: repo,
-		get:  http.Get,
+		appConfig: appConfig,
+		repo:      repo,
+		client:    client,
 	}
 }
 
@@ -33,7 +41,13 @@ func (bc *BookmarkChecker) CheckBookbarks() ([]BookmarkError, error) {
 
 	log.Printf("Checking %d bookmarks...\n", len(bms))
 	for _, bookmark := range bms {
-		resp, err := bc.get(bookmark.URL)
+
+		req, err := http.NewRequest(http.MethodGet, bookmark.URL, nil)
+		if err != nil {
+			return nil, fmt.Errorf("failed to create a request: %v", err)
+		}
+		req.Header.Add("User-Agent", bc.userAgentString())
+		resp, err := bc.client.Do(req)
 		working := true
 		if err != nil {
 			errors = append(errors, BookmarkError{
@@ -59,4 +73,8 @@ func (bc *BookmarkChecker) CheckBookbarks() ([]BookmarkError, error) {
 	}
 	log.Printf("Bookmarks check done! Found %d errors\n", len(errors))
 	return errors, nil
+}
+
+func (bc *BookmarkChecker) userAgentString() string {
+	return fmt.Sprintf("Mozilla/5.0 +https://github.com/saaste/bookmark-manager BookmarkManager/%s", bc.appConfig.AppVersion)
 }
