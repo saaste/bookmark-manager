@@ -109,7 +109,9 @@ func (h *Handler) HandleBookmarkAdd(w http.ResponseWriter, r *http.Request) {
 		data.Bookmark.IsWorking = true
 
 		data.Tags = r.Form.Get("tags")
-		data.Bookmark.Tags = strings.Split(data.Tags, " ")
+		if len(strings.TrimSpace(data.Tags)) > 0 {
+			data.Bookmark.Tags = strings.Split(data.Tags, " ")
+		}
 
 		if len(data.Errors) == 0 {
 			_, err := h.bookmarkRepo.Create(data.Bookmark)
@@ -184,7 +186,11 @@ func (h *Handler) HandleBookmarkEdit(w http.ResponseWriter, r *http.Request) {
 		data.Bookmark.Created = time.Now().UTC()
 
 		data.Tags = r.Form.Get("tags")
-		data.Bookmark.Tags = strings.Split(data.Tags, " ")
+		if len(strings.TrimSpace(data.Tags)) > 0 {
+			data.Bookmark.Tags = strings.Split(data.Tags, " ")
+		} else {
+			data.Bookmark.Tags = make([]string, 0)
+		}
 
 		if len(data.Errors) == 0 {
 			_, err := h.bookmarkRepo.Update(data.Bookmark)
