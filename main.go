@@ -49,6 +49,7 @@ func main() {
 	r.Get("/atom.xml", handler.HandleFeed)
 	r.Get("/rss.xml", handler.HandleFeed)
 	r.Get("/feed.json", handler.HandleFeed)
+	r.Get("/robots.txt", handler.HandleRobotsTxt)
 	r.Get("/tags/{tags}", handler.HandleTags)
 	r.Get("/tags/{tags}/atom.xml", handler.HandleFeed)
 	r.Get("/tags/{tags}/rss.xml", handler.HandleFeed)

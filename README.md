@@ -19,7 +19,9 @@ screen reader support, but if have an idea how to make it even better, feel free
    - bookmarks.db.example ➔ bookmarks.db
    - docker-compose.yml.example ➔ docker-compose.yml
    - config.yml.example ➔ config.yml
+   - robots.txt.example ➔ robots.txt
 2. Configure settings in `config.yml`. Each setting is described in the config file.
+3. Configure `robots.txt` if you want to limit how search engines and bots scrape your site
 
 ### Running with Docker (recommended)
 ```
