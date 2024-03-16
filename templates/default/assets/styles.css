@@ -150,6 +150,9 @@ header h1 a {
 #bookmarks .header h2 {
   flex: auto;
 }
+#bookmarks p {
+  padding-top: 1em;
+}
 #bookmarks ul {
   display: flex;
   flex-direction: column;
