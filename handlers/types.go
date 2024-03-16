@@ -14,19 +14,19 @@ type Page struct {
 }
 
 type templateData struct {
-	SiteName        string
-	Description     string
-	BaseURL         string
-	Title           string
-	CurrentURL      string
-	IsAuthenticated bool
-	PrivateOnly     bool
-	Bookmarks       []*bookmarks.Bookmark
-	Tags            []string
-	TagFilter       string
-	TextFilter      string
-	Pages           []Page
-	BrokenBookmarks []*bookmarks.Bookmark
+	SiteName             string
+	Description          string
+	BaseURL              string
+	Title                string
+	CurrentURL           string
+	IsAuthenticated      bool
+	PrivateOnly          bool
+	Bookmarks            []*bookmarks.Bookmark
+	Tags                 []string
+	TagFilter            string
+	TextFilter           string
+	Pages                []Page
+	BrokenBookmarksExist bool
 }
 
 type adminTemplateData struct {

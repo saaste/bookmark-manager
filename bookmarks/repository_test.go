@@ -360,6 +360,35 @@ func TestGetBrokenBookmarks(t *testing.T) {
 	assert.Equal(t, bookmark3.ID, result[1].ID)
 }
 
+func TestBrokenBookmarksExist(t *testing.T) {
+	db := initTestDatabase(t)
+	defer db.Close()
+
+	repo := NewSqliteRepository(db)
+
+	bookmark1 := createBookmark(false)
+	_, err := repo.Create(bookmark1)
+	assert.Nil(t, err)
+
+	bookmark2 := createBookmark(false)
+	_, err = repo.Create(bookmark2)
+	assert.Nil(t, err)
+
+	result, err := repo.BrokenBookmarksExist()
+	assert.Nil(t, err)
+	assert.False(t, result)
+
+	bookmark3 := createBookmark(true)
+	bookmark3.IsWorking = false
+	_, err = repo.Create(bookmark3)
+	assert.Nil(t, err)
+
+	result, err = repo.BrokenBookmarksExist()
+	assert.Nil(t, err)
+	assert.True(t, result)
+
+}
+
 func initTestDatabase(t *testing.T) *sql.DB {
 	db, err := sql.Open("sqlite3", "test_data/test.db")
 	assert.Nil(t, err)

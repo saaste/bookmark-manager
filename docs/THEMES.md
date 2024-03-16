@@ -18,7 +18,7 @@ If you are creating a new theme, it is probably easiest to use the `default` tem
 | .Tags             | []string      | List of all tags
 | .TextFilter       | string        | Current search term
 | .Pages            | []Page        | List of available pages for paginated content
-| .BrokenBookmarks  | []Bookmark    | List of broken bookmarks (only available for authenticated users)
+| .BrokenBookmarksExist  | bool     | Boolean indicating if broken bookmarks exist
 
 ## Types
 
