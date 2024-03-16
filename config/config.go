@@ -19,7 +19,7 @@ type AppConfig struct {
 	Secret            string `yaml:"secret"`
 	Port              int    `yaml:"port"`
 	PageSize          int    `yaml:"page_size"`
-	Template          string `yaml:"template"`
+	Theme             string `yaml:"theme"`
 	CheckInterval     int    `yaml:"check_interval,omitempty"`
 	CheckRunOnStartup bool   `yaml:"check_on_app_start,omitempty"`
 	GotifyEnabled     bool   `yaml:"gotify_enabled,omitempty"`

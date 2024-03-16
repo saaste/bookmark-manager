@@ -15,9 +15,7 @@ let tagSuggestions;
 
 window.onload = () => {
     baseUrl = document.querySelector("base").attributes.getNamedItem("href").value;
-
     scrape = document.getElementById("scrape");
-
     url = document.getElementById("url");
     title = document.getElementById("title");
     description = document.getElementById("description");

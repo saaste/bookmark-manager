@@ -47,6 +47,9 @@ Bookmark Manager can send a notification when it detects broken bookmarks. Curre
 the `gotify_enabled` setting to `true` and set `gotify_url` and `gotify_token` settings to match your
 environment.
 
+## Customizing the UI
+Bookmark Manager supports themes. If you want to create your own theme, read the separate [Theme Documentation](/docs/THEMES.md).
+
 ## Screenshots
 UI for guests
 
@@ -55,6 +58,3 @@ UI for guests
 UI for authenticated users
 
 ![Screenshot showing UI for authenticated users](docs/screenshot-authenticated.png "UI for authenticated users")
-
-## Plans for the future
-- Themes

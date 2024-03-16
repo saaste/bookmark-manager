@@ -1,0 +1,15 @@
+{{ define "headers" }}
+<base href="{{ .BaseURL }}">
+
+<meta property="og:title" content="{{ .Title }} | {{ .SiteName }}">
+<meta property="og:description" content="{{ .Description }}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ .CurrentURL }}">
+
+<link rel="alternate" type="application/rss+xml" title="RSS Feed" href="{{ feedUrl "rss" }}">
+<link rel="alternate" type="application/atom+xml" title="Atom Feed" href="{{ feedUrl "atom" }}">
+<link rel="alternate" type="application/json" title="JSON Feed" href="{{ feedUrl "json" }}">
+
+<script type="module" src="/scripts/api.js"></script>
+<script type="module" src="/scripts/admin.js"></script>
+{{ end }}

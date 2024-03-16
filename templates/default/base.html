@@ -6,19 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="{{ .Description }}">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <meta property="og:title" content="{{ .Title }} | {{ .SiteName }}">
-    <meta property="og:description" content="{{ .Description }}">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="{{ .CurrentURL }}">
     <title>{{ .Title }} | {{ .SiteName }}</title>
     <link rel="stylesheet" href="/assets/reset.css">
     <link rel="stylesheet" href="/assets/styles.css">
-    <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="{{ feedUrl "rss" }}">
-    <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="{{ feedUrl "atom" }}">
-    <link rel="alternate" type="application/json" title="JSON Feed" href="{{ feedUrl "json" }}">
-    <base href="{{ .BaseURL }}">
-    <script type="module" src="/assets/app.js"></script>
-    <script type="module" src="/assets/api.js"></script>
+
+    {{ template "headers" . }}
 </head>
 <body>
     <header id="header">

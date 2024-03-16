@@ -1,0 +1,12 @@
+{{ define "login_form" }}
+<form method="post" action="{{ .BaseURL }}/login">
+    <div class="input-group">
+        <label for="password">Password</label>
+        <div class="input-group horizontal">
+            <input type="password" name="password" id="password" autofocus />
+            <button type="submit">Log In</button>
+        </div>
+        {{ if .Error }}<p class="warning">{{ .Error }}</p>{{ end }}
+    </div>
+</form>
+{{ end }}

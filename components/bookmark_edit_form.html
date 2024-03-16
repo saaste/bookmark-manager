@@ -1,0 +1,42 @@
+{{ define "bookmark_edit_form" }}
+<form method="post" action="{{ .BaseURL}}/admin/bookmarks/{{ .Bookmark.ID }}" id="bookmark-form">
+    <div class="input-group">
+        <label for="url">URL (required)</label>
+        <input type="text" name="url" id="url" value="{{ .Bookmark.URL }}" required aria-required="true" />
+        {{ if index .Errors "url" }}
+        <span class="warning">{{ index .Errors "url" }}</span>
+        {{ end }}
+    </div>
+    
+    <div class="input-group">
+        <label for="title">Title (required)</label>
+        <input type="text" name="title" id="title" value="{{ .Bookmark.Title }}" required aria-required="true" />
+        {{ if index .Errors "title" }}
+        <span class="warning">{{ index .Errors "title" }}</span>
+        {{ end }}
+    </div>
+    
+    <div class="input-group">
+        <label for="description">Description</label>
+        <textarea name="description" id="description" rows="4">{{ .Bookmark.Description }}</textarea>
+    </div>
+    
+    <div class="input-group horizontal">
+        <input type="checkbox" name="is_private" id="is_private" value="1" {{ if .Bookmark.IsPrivate }}checked{{end}} /><br />
+        <label for="is_private">Private</label>
+    </div>
+
+    <div class="input-group horizontal">
+        <input type="checkbox" name="is_working" id="is_working" value="1" {{ if .Bookmark.IsWorking }}checked{{end}} /><br />
+        <label for="is_working">Is Working</label>
+    </div>
+
+    <div class="input-group">
+        <label for="tags">Tags (separated with spaces)</label>
+        <input type="text" name="tags" id="tags"  value="{{ .Tags }}" autocomplete="off" /><br />
+        <ul id="tag-suggestions" class="autocomplete"></ul>
+    </div>
+
+    <button type="submit">Save changes</button>
+</form>
+{{ end }}

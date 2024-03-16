@@ -68,7 +68,8 @@ func main() {
 	r.Get("/api/metadata", handler.HandleAPIMetadata)
 	r.Get("/api/tags", handler.HandleAPITags)
 
-	handler.ServeFiles(r, "/assets", http.Dir(fmt.Sprintf("templates/%s/assets", appConf.Template)))
+	handler.ServeFiles(r, "/assets", http.Dir(fmt.Sprintf("templates/%s/assets", appConf.Theme)))
+	handler.ServeFiles(r, "/scripts", http.Dir("components/scripts"))
 
 	log.Printf("Server address: http://localhost:%d", appConf.Port)
 	err = http.ListenAndServe(fmt.Sprintf(":%d", appConf.Port), r)

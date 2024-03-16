@@ -3,11 +3,11 @@
 
 
 <section id="bookmarks">
-    <nav class="mobile-only mobile-helper"><a href="{{ anchorUrl "q" }}" id="top">Go to Search and Tags</a></nav>
+    <nav class="mobile-only mobile-helper"><a href='{{ anchorUrl "q" }}' id="top">Go to Search and Tags</a></nav>
     <div class="header">
         <h2>{{ .Title }}</h2>
         {{ if .Bookmarks }}
-        <a href="{{ feedUrl "rss" }}"><img src="{{ .BaseURL }}/assets/feed.png" class="feed-icon" alt="RSS feed icon" title="Bookmarks feed"></a>
+        <a href='{{ feedUrl "rss" }}'><img src="{{ .BaseURL }}/assets/feed.png" class="feed-icon" alt="RSS feed icon" title="Bookmarks feed"></a>
         {{ end }}
     </div>
     {{ if .Bookmarks }}

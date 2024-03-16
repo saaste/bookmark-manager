@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"os"
 	"strconv"
 	"strings"
 
@@ -27,6 +28,22 @@ func (h *Handler) getBookmarksWithPagination(isAuthenticated bool, q, tags strin
 }
 
 func (h *Handler) parseTemplateWithFunc(templateFile string, r *http.Request, w http.ResponseWriter, data any) {
+	templateFiles := []string{
+		h.getTemplateFile("base.html"),
+		h.getTemplateFile(templateFile),
+	}
+
+	entries, err := os.ReadDir("components")
+	if err != nil {
+		h.internalServerError(w, "Reading UI components failed", err)
+		return
+	}
+	for _, entry := range entries {
+		if !entry.IsDir() && strings.HasSuffix(entry.Name(), ".html") {
+			templateFiles = append(templateFiles, fmt.Sprintf("components/%s", entry.Name()))
+		}
+	}
+
 	t, err := template.New("").
 		Funcs(template.FuncMap{
 			"paginationUrl": func(pageNumber int) string {
@@ -48,7 +65,7 @@ func (h *Handler) parseTemplateWithFunc(templateFile string, r *http.Request, w 
 			"anchorUrl": func(id string) string {
 				return h.getAnchorURL(r, id)
 			},
-		}).ParseFiles(h.getTemplateFile("base.html"), h.getTemplateFile(templateFile))
+		}).ParseFiles(templateFiles...)
 	if err != nil {
 		h.internalServerError(w, fmt.Sprintf("Failed to parse template %s", templateFile), err)
 		return
@@ -62,7 +79,7 @@ func (h *Handler) parseTemplateWithFunc(templateFile string, r *http.Request, w 
 }
 
 func (h *Handler) getTemplateFile(filename string) string {
-	return fmt.Sprintf("templates/%s/%s", h.appConf.Template, filename)
+	return fmt.Sprintf("templates/%s/%s", h.appConf.Theme, filename)
 }
 
 func (h *Handler) isAuthenticated(r *http.Request) bool {
