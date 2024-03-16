@@ -2,6 +2,7 @@ package bookmarks
 
 import (
 	"database/sql"
+	"os"
 	"testing"
 	"time"
 
@@ -11,7 +12,7 @@ import (
 
 func TestCreate(t *testing.T) {
 	db := initTestDatabase(t)
-	defer db.Close()
+	defer destroyTestDatabase(t, db)
 
 	repo := NewSqliteRepository(db)
 
@@ -32,7 +33,7 @@ func TestCreate(t *testing.T) {
 
 func TestUpdate(t *testing.T) {
 	db := initTestDatabase(t)
-	defer db.Close()
+	defer destroyTestDatabase(t, db)
 
 	repo := NewSqliteRepository(db)
 
@@ -62,7 +63,7 @@ func TestUpdate(t *testing.T) {
 
 func TestGet(t *testing.T) {
 	db := initTestDatabase(t)
-	defer db.Close()
+	defer destroyTestDatabase(t, db)
 
 	repo := NewSqliteRepository(db)
 
@@ -81,7 +82,7 @@ func TestGet(t *testing.T) {
 
 func TestDelete(t *testing.T) {
 	db := initTestDatabase(t)
-	defer db.Close()
+	defer destroyTestDatabase(t, db)
 
 	repo := NewSqliteRepository(db)
 
@@ -100,7 +101,7 @@ func TestDelete(t *testing.T) {
 
 func TestGetAll(t *testing.T) {
 	db := initTestDatabase(t)
-	defer db.Close()
+	defer destroyTestDatabase(t, db)
 
 	repo := NewSqliteRepository(db)
 
@@ -144,7 +145,7 @@ func TestGetAll(t *testing.T) {
 
 func TestGetPrivate(t *testing.T) {
 	db := initTestDatabase(t)
-	defer db.Close()
+	defer destroyTestDatabase(t, db)
 
 	repo := NewSqliteRepository(db)
 
@@ -180,7 +181,7 @@ func TestGetPrivate(t *testing.T) {
 
 func TestGetByTags(t *testing.T) {
 	db := initTestDatabase(t)
-	defer db.Close()
+	defer destroyTestDatabase(t, db)
 
 	repo := NewSqliteRepository(db)
 
@@ -224,7 +225,7 @@ func TestGetByTags(t *testing.T) {
 
 func TestGetByKeyword(t *testing.T) {
 	db := initTestDatabase(t)
-	defer db.Close()
+	defer destroyTestDatabase(t, db)
 
 	repo := NewSqliteRepository(db)
 
@@ -269,7 +270,7 @@ func TestGetByKeyword(t *testing.T) {
 
 func TestGetTags(t *testing.T) {
 	db := initTestDatabase(t)
-	defer db.Close()
+	defer destroyTestDatabase(t, db)
 
 	repo := NewSqliteRepository(db)
 
@@ -300,7 +301,7 @@ func TestGetTags(t *testing.T) {
 
 func TestGetAllWithoutPagination(t *testing.T) {
 	db := initTestDatabase(t)
-	defer db.Close()
+	defer destroyTestDatabase(t, db)
 
 	repo := NewSqliteRepository(db)
 
@@ -331,7 +332,7 @@ func TestGetAllWithoutPagination(t *testing.T) {
 
 func TestGetBrokenBookmarks(t *testing.T) {
 	db := initTestDatabase(t)
-	defer db.Close()
+	defer destroyTestDatabase(t, db)
 
 	repo := NewSqliteRepository(db)
 
@@ -362,7 +363,7 @@ func TestGetBrokenBookmarks(t *testing.T) {
 
 func TestBrokenBookmarksExist(t *testing.T) {
 	db := initTestDatabase(t)
-	defer db.Close()
+	defer destroyTestDatabase(t, db)
 
 	repo := NewSqliteRepository(db)
 
@@ -390,7 +391,12 @@ func TestBrokenBookmarksExist(t *testing.T) {
 }
 
 func initTestDatabase(t *testing.T) *sql.DB {
-	db, err := sql.Open("sqlite3", "test_data/test.db")
+	_, err := os.Stat("../test_data")
+	if os.IsNotExist(err) {
+		os.Mkdir("../test_data", os.ModePerm)
+	}
+
+	db, err := sql.Open("sqlite3", "../test_data/repository_test.db")
 	assert.Nil(t, err)
 
 	err = migrations.RunMigrations(db)
@@ -405,7 +411,11 @@ func initTestDatabase(t *testing.T) *sql.DB {
 	return db
 }
 
-// TODO: Destroy database after test run
+func destroyTestDatabase(t *testing.T, db *sql.DB) {
+	defer db.Close()
+	err := os.Remove("../test_data/repository_test.db")
+	assert.Nil(t, err)
+}
 
 func createBookmark(isPrivate bool) *Bookmark {
 	return &Bookmark{
