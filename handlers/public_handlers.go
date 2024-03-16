@@ -26,7 +26,7 @@ func (h *Handler) HandleIndex(w http.ResponseWriter, r *http.Request) {
 
 	title := "Recent Bookmarks"
 	if q != "" {
-		title = "Search Results"
+		title = fmt.Sprintf("Search Results: \"%s\"", q)
 	}
 
 	data := h.defaultTemplateData(w, r, isAuthenticated)
