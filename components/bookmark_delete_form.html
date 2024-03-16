@@ -2,7 +2,7 @@
 <form method="post" action="{{ .BaseURL}}/admin/bookmarks/{{ .Bookmark.ID }}/delete">
     <p>Are you sure you want to delete the following bookmark?</p>
     
-    <div class="box">
+    <div class="info-box">
         <h3>{{ .Bookmark.Title }}</h3>
         {{ if .Bookmark.Description }}<p>{{ .Bookmark.Description }}</p>{{ end }}
     </div>

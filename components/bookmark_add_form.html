@@ -26,7 +26,7 @@
         <textarea name="description" id="description" rows="4">{{ .Bookmark.Description }}</textarea>
     </div>
     
-    <div class="input-group horizontal checkbox">
+    <div class="input-group horizontal">
         <input type="checkbox" name="is_private" id="is_private" value="1" {{ if .Bookmark.IsPrivate }}checked{{end}} />
         <label for="is_private">Private</label>
     </div>

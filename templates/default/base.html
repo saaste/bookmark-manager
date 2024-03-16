@@ -13,10 +13,10 @@
     {{ template "headers" . }}
 </head>
 <body>
-    <header id="header">
-        <div class="content">
+    <div id="container">
+        <header>
             <h1><a href="{{ .BaseURL }}">{{ .SiteName }}</a></h1>
-            <nav class="auth-nav">
+            <nav>
                 {{ if .IsAuthenticated }}
                 <a href="{{ .BaseURL }}/admin/bookmarks/add">Add Bookmark</a> |
                 <a href="{{ .BaseURL }}/admin/bookmarks">Private Bookmarks</a> |
@@ -28,17 +28,19 @@
                 <a href="{{ .BaseURL }}/login">Log in</a>
                 {{ end }}
             </nav>
-        </div>
-    </header>
-    <main id="content">
-        {{ template "content" .}}
-    </main>
-    <footer id="footer">
-        <p>Powered by <a href="https://github.com/saaste/bookmark-manager" target="_blank">Bookmark Manager (GitHub)</a></p>
-        {{ if .IsAuthenticated }}
-            <p>version {{ .AppVersion }}</p>
-        {{ end }}
-    </footer>
+        </header>
+
+        <main>
+            {{ template "content" .}}
+        </main>
+        
+        <footer>
+            <p>Powered by <a href="https://github.com/saaste/bookmark-manager" target="_blank">Bookmark Manager (GitHub)</a></p>
+            {{ if .IsAuthenticated }}
+                <p>version {{ .AppVersion }}</p>
+            {{ end }}
+        </footer>
+    </div>
 </body>
 </html>
 {{ end }}
