@@ -33,25 +33,11 @@ func (h *Handler) HandlePrivateBookmarks(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	brokenBookmarksExist, err := h.bookmarkRepo.BrokenBookmarksExist()
-	if err != nil {
-		h.internalServerError(w, "Failed to check if broken bookmarks exist", err)
-		return
-	}
-
-	data := templateData{
-		SiteName:             h.appConf.SiteName,
-		Description:          h.appConf.Description,
-		Title:                "Private Bookmarks",
-		BaseURL:              h.appConf.BaseURL,
-		CurrentURL:           h.getCurrentURL(r, h.appConf),
-		IsAuthenticated:      isAuthenticated,
-		PrivateOnly:          true,
-		Bookmarks:            bookmarkResult.Bookmarks,
-		Tags:                 allTags,
-		Pages:                h.getPages(page, bookmarkResult.PageCount),
-		BrokenBookmarksExist: brokenBookmarksExist,
-	}
+	data := h.defaultTemplateData(w, r, isAuthenticated)
+	data.Title = "Private Bookmarks"
+	data.Bookmarks = bookmarkResult.Bookmarks
+	data.Tags = allTags
+	data.Pages = h.getPages(page, bookmarkResult.PageCount)
 
 	h.parseTemplateWithFunc("index.html", r, w, data)
 }
@@ -75,18 +61,10 @@ func (h *Handler) HandleBrokenBookmarks(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	data := templateData{
-		SiteName:             h.appConf.SiteName,
-		Description:          h.appConf.Description,
-		Title:                "Broken Bookmarks",
-		BaseURL:              h.appConf.BaseURL,
-		CurrentURL:           h.getCurrentURL(r, h.appConf),
-		IsAuthenticated:      isAuthenticated,
-		PrivateOnly:          true,
-		Bookmarks:            bookmarks,
-		Tags:                 allTags,
-		BrokenBookmarksExist: len(bookmarks) > 0,
-	}
+	data := h.defaultTemplateData(w, r, isAuthenticated)
+	data.Title = "Broken Bookmarks"
+	data.Bookmarks = bookmarks
+	data.Tags = allTags
 
 	h.parseTemplateWithFunc("index.html", r, w, data)
 }
@@ -98,25 +76,14 @@ func (h *Handler) HandleBookmarkAdd(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	brokenBookmarksExist, err := h.bookmarkRepo.BrokenBookmarksExist()
-	if err != nil {
-		h.internalServerError(w, "Failed to check if broken bookmarks exist", err)
-		return
-	}
+	baseData := h.defaultTemplateData(w, r, isAuthenticated)
+	baseData.Title = "Add Bookmark"
 
 	data := adminTemplateData{
-		templateData: templateData{
-			SiteName:             h.appConf.SiteName,
-			Description:          h.appConf.Description,
-			Title:                "Add Bookmark",
-			BaseURL:              h.appConf.BaseURL,
-			CurrentURL:           h.getCurrentURL(r, h.appConf),
-			IsAuthenticated:      isAuthenticated,
-			BrokenBookmarksExist: brokenBookmarksExist,
-		},
-		Errors:   make(map[string]string),
-		Bookmark: &bookmarks.Bookmark{},
-		Tags:     "",
+		templateData: baseData,
+		Errors:       make(map[string]string),
+		Bookmark:     &bookmarks.Bookmark{},
+		Tags:         "",
 	}
 
 	if r.Method == http.MethodPost {
@@ -184,25 +151,14 @@ func (h *Handler) HandleBookmarkEdit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	brokenBookmarksExist, err := h.bookmarkRepo.BrokenBookmarksExist()
-	if err != nil {
-		h.internalServerError(w, "Failed to check if broken bookmarks exist", err)
-		return
-	}
+	baseData := h.defaultTemplateData(w, r, isAuthenticated)
+	baseData.Title = "Edit Bookmark"
 
 	data := adminTemplateData{
-		templateData: templateData{
-			SiteName:             h.appConf.SiteName,
-			Description:          h.appConf.Description,
-			Title:                "Edit Bookmark",
-			BaseURL:              h.appConf.BaseURL,
-			CurrentURL:           h.getCurrentURL(r, h.appConf),
-			IsAuthenticated:      isAuthenticated,
-			BrokenBookmarksExist: brokenBookmarksExist,
-		},
-		Errors:   make(map[string]string),
-		Bookmark: bookmark,
-		Tags:     strings.Join(bookmark.Tags, " "),
+		templateData: baseData,
+		Errors:       make(map[string]string),
+		Bookmark:     bookmark,
+		Tags:         strings.Join(bookmark.Tags, " "),
 	}
 
 	if r.Method == http.MethodPost {
@@ -271,23 +227,12 @@ func (h *Handler) HandleBookmarkDelete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	brokenBookmarksExist, err := h.bookmarkRepo.BrokenBookmarksExist()
-	if err != nil {
-		h.internalServerError(w, "Failed to check if broken bookmarks exist", err)
-		return
-	}
+	baseData := h.defaultTemplateData(w, r, isAuthenticated)
+	baseData.Title = "Delete Bookmark"
 
 	data := adminTemplateData{
-		templateData: templateData{
-			SiteName:             h.appConf.SiteName,
-			Description:          h.appConf.Description,
-			Title:                "Delete Bookmark",
-			BaseURL:              h.appConf.BaseURL,
-			CurrentURL:           h.getCurrentURL(r, h.appConf),
-			IsAuthenticated:      isAuthenticated,
-			BrokenBookmarksExist: brokenBookmarksExist,
-		},
-		Bookmark: bookmark,
+		templateData: baseData,
+		Bookmark:     bookmark,
 	}
 
 	if r.Method == http.MethodPost {

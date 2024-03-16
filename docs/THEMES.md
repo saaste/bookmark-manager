@@ -17,8 +17,10 @@ If you are creating a new theme, it is probably easiest to use the `default` tem
 | .Bookmarks        | [[]Bookmark](#bookmark)    | List of bookmarks visible in the view
 | .Tags             | []string      | List of all tags
 | .TextFilter       | string        | Current search term
+| .TagFilter        | string        | Current tag filter
 | .Pages            | []Page        | List of available pages for paginated content
 | .BrokenBookmarksExist  | bool     | Boolean indicating if broken bookmarks exist
+| .AppVersion       | string        | Current application version
 
 ## Types
 

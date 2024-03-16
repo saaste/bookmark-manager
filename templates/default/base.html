@@ -34,7 +34,10 @@
         {{ template "content" .}}
     </main>
     <footer id="footer">
-        Powered by <a href="https://github.com/saaste/bookmark-manager" target="_blank">Bookmark Manager (GitHub)</a>
+        <p>Powered by <a href="https://github.com/saaste/bookmark-manager" target="_blank">Bookmark Manager (GitHub)</a></p>
+        {{ if .IsAuthenticated }}
+            <p>version {{ .AppVersion }}</p>
+        {{ end }}
     </footer>
 </body>
 </html>

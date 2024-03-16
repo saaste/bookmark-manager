@@ -177,6 +177,10 @@ button[disabled]:hover {
     color: var(--footer-color);
 }
 
+#footer p {
+    padding-bottom: 0.5em;
+}
+
 #footer a {
     color: var(--footer-color);
 }

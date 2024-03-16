@@ -20,13 +20,13 @@ type templateData struct {
 	Title                string
 	CurrentURL           string
 	IsAuthenticated      bool
-	PrivateOnly          bool
 	Bookmarks            []*bookmarks.Bookmark
 	Tags                 []string
 	TagFilter            string
 	TextFilter           string
 	Pages                []Page
 	BrokenBookmarksExist bool
+	AppVersion           string
 }
 
 type adminTemplateData struct {

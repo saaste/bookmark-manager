@@ -16,15 +16,11 @@ func (h *Handler) HandleLogin(w http.ResponseWriter, r *http.Request) {
 		Error string
 	}
 
+	baseData := h.defaultTemplateData(w, r, isAuthenticated)
+	baseData.Title = "Login"
+
 	data := loginTemplateData{
-		templateData: templateData{
-			SiteName:        h.appConf.SiteName,
-			Description:     h.appConf.Description,
-			BaseURL:         h.appConf.BaseURL,
-			CurrentURL:      h.getCurrentURL(r, h.appConf),
-			IsAuthenticated: isAuthenticated,
-			Title:           "Login",
-		},
+		templateData: baseData,
 	}
 
 	if r.Method == http.MethodPost {
