@@ -19,7 +19,7 @@ const (
 )
 
 func (h *Handler) HandleFeed(w http.ResponseWriter, r *http.Request) {
-	isAuthenticated := h.isAuthenticated(r)
+	isAuthenticated := h.isAuthenticated(w, r)
 	tags := chi.URLParam(r, "tags")
 	q := r.URL.Query().Get("q")
 

@@ -5,7 +5,7 @@ import (
 )
 
 func (h *Handler) HandleLogin(w http.ResponseWriter, r *http.Request) {
-	isAuthenticated := h.isAuthenticated(r)
+	isAuthenticated := h.isAuthenticated(w, r)
 	if isAuthenticated {
 		http.Redirect(w, r, h.appConf.BaseURL, http.StatusFound)
 		return
@@ -44,6 +44,7 @@ func (h *Handler) HandleLogin(w http.ResponseWriter, r *http.Request) {
 				HttpOnly: true,
 				Secure:   false,
 				SameSite: http.SameSiteLaxMode,
+				MaxAge:   60 * 60 * 24 * 30,
 			})
 			http.Redirect(w, r, h.appConf.BaseURL, http.StatusFound)
 			return

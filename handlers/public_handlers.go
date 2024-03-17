@@ -8,7 +8,7 @@ import (
 )
 
 func (h *Handler) HandleIndex(w http.ResponseWriter, r *http.Request) {
-	isAuthenticated := h.isAuthenticated(r)
+	isAuthenticated := h.isAuthenticated(w, r)
 	q := r.URL.Query().Get("q")
 	page := h.getPageParam(r)
 
@@ -40,7 +40,7 @@ func (h *Handler) HandleIndex(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) HandleTags(w http.ResponseWriter, r *http.Request) {
-	isAuthenticated := h.isAuthenticated(r)
+	isAuthenticated := h.isAuthenticated(w, r)
 	tagsParam := chi.URLParam(r, "tags")
 	page := h.getPageParam(r)
 

@@ -81,11 +81,18 @@ func (h *Handler) getTemplateFile(filename string) string {
 	return fmt.Sprintf("templates/%s/%s", h.appConf.Theme, filename)
 }
 
-func (h *Handler) isAuthenticated(r *http.Request) bool {
+func (h *Handler) isAuthenticated(w http.ResponseWriter, r *http.Request) bool {
 	cookie, err := r.Cookie("auth")
 	if err != nil {
 		return false
 	}
+
+	isValid := h.auth.IsValid(cookie)
+
+	if isValid {
+		h.auth.UpdateCookie(w, cookie)
+	}
+
 	return h.auth.IsValid(cookie)
 }
 

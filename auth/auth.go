@@ -37,3 +37,8 @@ func (a *Authenticator) CalculateHash() (string, error) {
 	}
 	return string(bytes), nil
 }
+
+func (a *Authenticator) UpdateCookie(w http.ResponseWriter, cookie *http.Cookie) {
+	cookie.MaxAge = 60 * 60 * 24 * 30
+	http.SetCookie(w, cookie)
+}
