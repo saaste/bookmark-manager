@@ -13,25 +13,29 @@
     {{ template "headers" . }}
 
     <script type="module" src="/assets/dark-light.js"></script>
+    <script type="module" src="/assets/menu.js"></script>
 </head>
 <body>
     <div id="container">
         <header>
             <h1><a href="{{ .BaseURL }}">{{ .SiteName }}</a></h1>
             <nav>
-                {{ if .IsAuthenticated }}
-                <a href="{{ .BaseURL }}admin/bookmarks/add">Add Bookmark</a> |
-                <a href="{{ .BaseURL }}admin/bookmarks">Private Bookmarks</a> |
-                {{ if .BrokenBookmarksExist }}
-                <a href="{{ .BaseURL }}admin/bookmarks/broken" class="warning">Broken Bookmarks</a> |
-                {{ end}}
-                <a href="{{ .BaseURL }}logout">Log out</a> |
-                {{ else }}
-                <a href="{{ .BaseURL }}login">Log in</a> |
-                {{ end }}
-                <a href="#" id="mode-switch" aria-label="Switch to light mode">
-                    <img src="{{ .BaseURL }}assets/light.png" alt="Sun icon" id="mode-switch-icon" class="icon">
-                </a>
+                <a href="#" id="menu-icon" aria-label="Toggle navigation menu" class="mobile-helper">&#9776;</a>
+                <div id="menu-items" class="hidden-mobile">
+                    {{ if .IsAuthenticated }}
+                    <a href="{{ .BaseURL }}admin/bookmarks/add">Add Bookmark</a>
+                    <a href="{{ .BaseURL }}admin/bookmarks">Private Bookmarks</a>
+                    {{ if .BrokenBookmarksExist }}
+                    <a href="{{ .BaseURL }}admin/bookmarks/broken" class="warning">Broken Bookmarks</a>
+                    {{ end}}
+                    <a href="{{ .BaseURL }}logout">Log out</a>
+                    {{ else }}
+                    <a href="{{ .BaseURL }}login">Log in</a>
+                    {{ end }}
+                    <a href="#" id="mode-switch" aria-label="Switch to light mode">
+                        <img src="{{ .BaseURL }}assets/light.png" alt="Sun icon" id="mode-switch-icon" class="icon">
+                    </a>
+                </div>
             </nav>
         </header>
 

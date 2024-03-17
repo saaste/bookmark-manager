@@ -162,14 +162,20 @@ header {
     align-items: baseline;
     padding-bottom: 1em;
 
-    .nav {
+    nav {
         display: flex;
-        white-space: nowrap;
         gap: 0.5em;
+
+        #menu-icon {
+            font-size: 2em;
+            text-decoration: none;
+            color: $page-text-color;
+        }
     }
 
     h1 {
         flex: auto;
+
         a {
             color: $page-text-color;
             text-decoration: none;
@@ -353,7 +359,32 @@ button.warning {
         white-space: nowrap;
 
         nav {
-            font-size: 0.8em;
+
+            #menu-icon {
+                padding: 0;
+            }
+
+            #menu-items {
+                position: absolute;
+                top: 4em;
+                right: 1em;
+
+                display: flex;
+                flex-direction: column;
+                gap: 1em;
+
+                background-color: $box-color;
+                border-color: $box-border-color;
+                border-radius: 5px;
+
+                padding: 1em;
+                font-size: 1.2em;
+                box-shadow: -5px 5px 10px rgba(0, 0, 0, 0.41);
+
+                &.hidden-mobile {
+                    display: none;
+                }
+            }
         }
     }
 
@@ -412,8 +443,16 @@ html.light {
 
     header {
         border-bottom: 1px dashed $light-page-text-color;
+
         h1 {
             a {
+                color: $light-page-text-color;
+            }
+        }
+
+        nav {
+
+            #menu-icon {
                 color: $light-page-text-color;
             }
         }
@@ -476,5 +515,18 @@ html.light {
 
     .warning {
         color: $light-warning-color;
+    }
+}
+
+@media only screen and (max-width: $mobile-max-width) {
+    html.light {
+        header {
+            nav {
+                #menu-items {
+                    background-color: $light-info-box-border-color;
+                    border-color: $light-info-box-border-color
+                }
+            }
+        }
     }
 }

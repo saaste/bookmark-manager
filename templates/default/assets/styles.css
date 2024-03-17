@@ -120,10 +120,14 @@ header {
   align-items: baseline;
   padding-bottom: 1em;
 }
-header .nav {
+header nav {
   display: flex;
-  white-space: nowrap;
   gap: 0.5em;
+}
+header nav #menu-icon {
+  font-size: 2em;
+  text-decoration: none;
+  color: #F8F8F2;
 }
 header h1 {
   flex: auto;
@@ -281,8 +285,25 @@ button.warning {
     justify-content: center;
     white-space: nowrap;
   }
-  header nav {
-    font-size: 0.8em;
+  header nav #menu-icon {
+    padding: 0;
+  }
+  header nav #menu-items {
+    position: absolute;
+    top: 4em;
+    right: 1em;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    background-color: hsl(212, 15%, 22%);
+    border-color: hsl(212, 15%, 28%);
+    border-radius: 5px;
+    padding: 1em;
+    font-size: 1.2em;
+    box-shadow: -5px 5px 10px rgba(0, 0, 0, 0.41);
+  }
+  header nav #menu-items.hidden-mobile {
+    display: none;
   }
   main {
     display: flex;
@@ -310,6 +331,9 @@ html.light header {
   border-bottom: 1px dashed #1d1d1d;
 }
 html.light header h1 a {
+  color: #1d1d1d;
+}
+html.light header nav #menu-icon {
   color: #1d1d1d;
 }
 html.light footer {
@@ -362,6 +386,13 @@ html.light .info-box {
 }
 html.light .warning {
   color: rgb(136, 0, 0);
+}
+
+@media only screen and (max-width: 600px) {
+  html.light header nav #menu-items {
+    background-color: #bbb;
+    border-color: #bbb;
+  }
 }
 
 /*# sourceMappingURL=styles.css.map */
