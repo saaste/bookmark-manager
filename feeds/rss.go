@@ -2,6 +2,7 @@ package feeds
 
 import (
 	"fmt"
+	"html"
 	"strings"
 	"time"
 
@@ -20,9 +21,9 @@ func ToRSS(feedInfo FeedInfo, bookmarks []*bookmarks.Bookmark) string {
 	output = append(output, "<channel>")
 
 	// Channel
-	output = append(output, fmt.Sprintf("\t<title>%s</title>", feedInfo.SiteName))
+	output = append(output, fmt.Sprintf("\t<title>%s</title>", html.EscapeString(feedInfo.SiteName)))
 	output = append(output, fmt.Sprintf("\t<link>%s</link>", feedInfo.BaseURL))
-	output = append(output, fmt.Sprintf("\t<description>%s</description>", feedInfo.Description))
+	output = append(output, fmt.Sprintf("\t<description>%s</description>", html.EscapeString(feedInfo.Description)))
 	output = append(output, fmt.Sprintf("\t<pubDate>%s</pubDate>", pubDate.Format(time.RFC1123Z)))
 	output = append(output, fmt.Sprintf("\t<lastBuildDate>%s</lastBuildDate>", pubDate.Format(time.RFC1123Z)))
 	output = append(output, "\t<generator>Bookmark Manager (https://github.com/saaste/bookmark-manager)</generator>")
@@ -32,11 +33,11 @@ func ToRSS(feedInfo FeedInfo, bookmarks []*bookmarks.Bookmark) string {
 	for _, bm := range bookmarks {
 		output = append(output, "\t<item>")
 
-		output = append(output, fmt.Sprintf("\t\t<title>%s</title>", bm.Title))
+		output = append(output, fmt.Sprintf("\t\t<title>%s</title>", html.EscapeString(bm.Title)))
 		output = append(output, fmt.Sprintf("\t\t<link>%s</link>", bm.URL))
 
 		if bm.Description != "" {
-			output = append(output, fmt.Sprintf("\t\t<description>%s</description>", bm.Title))
+			output = append(output, fmt.Sprintf("\t\t<description>%s</description>", html.EscapeString(bm.Title)))
 		}
 
 		output = append(output, fmt.Sprintf("\t\t<pubDate>%s</pubDate>", bm.Created.Format(time.RFC1123Z)))
