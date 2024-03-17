@@ -17,7 +17,7 @@
     <div class="header">
         <h2>{{ .Title }}</h2>
         {{ if .Bookmarks }}
-        <a href='{{ feedUrl "rss" }}'><img src="{{ .BaseURL }}/assets/feed.png" class="icon" alt="RSS feed icon" title="RSS feed"></a>
+        <a href='{{ feedUrl "rss" }}'><img src="{{ .BaseURL }}assets/feed.png" class="icon" alt="RSS feed icon" title="RSS feed"></a>
         {{ end }}
     </div>
     
@@ -29,8 +29,8 @@
                 <h3><a href="{{ .URL }}" target="_blank" rel="noopener noreferrer">{{ .Title }}</a></h3>
                 {{ if $.IsAuthenticated }}
                 <div>
-                    {{ if eq .IsWorking false }}<img src="{{ $.BaseURL }}/assets/warning.png" class="icon" alt="Exclamation point icon" title="Bookmark is broken">{{ end }}
-                    {{ if eq .IsPrivate true }}<img src="{{ $.BaseURL }}/assets/lock.png" class="icon" alt="Lock icon" title="Bookmark is private">{{ end }}
+                    {{ if eq .IsWorking false }}<img src="{{ $.BaseURL }}assets/warning.png" class="icon" alt="Exclamation point icon" title="Bookmark is broken">{{ end }}
+                    {{ if eq .IsPrivate true }}<img src="{{ $.BaseURL }}assets/lock.png" class="icon" alt="Lock icon" title="Bookmark is private">{{ end }}
                 </div>
                 {{ end }}
             </div>
@@ -44,14 +44,14 @@
                 <div class="tags">
                     Tags:
                     {{ range .Tags }}
-                        <a href="{{ $.BaseURL}}/tags/{{ . }}">{{ . }}</a>
+                        <a href="{{ $.BaseURL}}tags/{{ . }}">{{ . }}</a>
                     {{ end }}
                 </div>
                 {{ end}}
                 {{ if $.IsAuthenticated }}
                 <div class="actions">
-                    <a href="{{ $.BaseURL }}/admin/bookmarks/{{ .ID }}">Edit</a>
-                    <a href="{{ $.BaseURL }}/admin/bookmarks/{{ .ID }}/delete">Delete</a>
+                    <a href="{{ $.BaseURL }}admin/bookmarks/{{ .ID }}">Edit</a>
+                    <a href="{{ $.BaseURL }}admin/bookmarks/{{ .ID }}/delete">Delete</a>
                 </div>
                 {{ end }}
             </div>
@@ -84,7 +84,7 @@
     <h2>Tags</h2>
     <ul>
         {{ range .Tags }}
-        <li><a href="{{ $.BaseURL}}/tags/{{ . }}">{{ . }}</a></li>    
+        <li><a href="{{ $.BaseURL}}tags/{{ . }}">{{ . }}</a></li>    
         {{ end }}
     </ul>
 </section>

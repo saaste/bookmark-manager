@@ -18,14 +18,14 @@
             <h1><a href="{{ .BaseURL }}">{{ .SiteName }}</a></h1>
             <nav>
                 {{ if .IsAuthenticated }}
-                <a href="{{ .BaseURL }}/admin/bookmarks/add">Add Bookmark</a> |
-                <a href="{{ .BaseURL }}/admin/bookmarks">Private Bookmarks</a> |
+                <a href="{{ .BaseURL }}admin/bookmarks/add">Add Bookmark</a> |
+                <a href="{{ .BaseURL }}admin/bookmarks">Private Bookmarks</a> |
                 {{ if .BrokenBookmarksExist }}
-                <a href="{{ .BaseURL }}/admin/bookmarks/broken" class="warning">Broken Bookmarks</a> |
+                <a href="{{ .BaseURL }}admin/bookmarks/broken" class="warning">Broken Bookmarks</a> |
                 {{ end}}
-                <a href="{{ .BaseURL }}/logout">Log out</a>
+                <a href="{{ .BaseURL }}logout">Log out</a>
                 {{ else }}
-                <a href="{{ .BaseURL }}/login">Log in</a>
+                <a href="{{ .BaseURL }}login">Log in</a>
                 {{ end }}
             </nav>
         </header>

@@ -15,7 +15,7 @@ import (
 func (h *Handler) HandlePrivateBookmarks(w http.ResponseWriter, r *http.Request) {
 	isAuthenticated := h.isAuthenticated(r)
 	if !isAuthenticated {
-		http.Redirect(w, r, fmt.Sprintf("%s/login", h.appConf.BaseURL), http.StatusFound)
+		http.Redirect(w, r, fmt.Sprintf("%slogin", h.appConf.BaseURL), http.StatusFound)
 		return
 	}
 
@@ -45,7 +45,7 @@ func (h *Handler) HandlePrivateBookmarks(w http.ResponseWriter, r *http.Request)
 func (h *Handler) HandleBrokenBookmarks(w http.ResponseWriter, r *http.Request) {
 	isAuthenticated := h.isAuthenticated(r)
 	if !isAuthenticated {
-		http.Redirect(w, r, fmt.Sprintf("%s/login", h.appConf.BaseURL), http.StatusFound)
+		http.Redirect(w, r, fmt.Sprintf("%slogin", h.appConf.BaseURL), http.StatusFound)
 		return
 	}
 
@@ -72,7 +72,7 @@ func (h *Handler) HandleBrokenBookmarks(w http.ResponseWriter, r *http.Request) 
 func (h *Handler) HandleBookmarkAdd(w http.ResponseWriter, r *http.Request) {
 	isAuthenticated := h.isAuthenticated(r)
 	if !isAuthenticated {
-		http.Redirect(w, r, fmt.Sprintf("%s/login", h.appConf.BaseURL), http.StatusFound)
+		http.Redirect(w, r, fmt.Sprintf("%slogin", h.appConf.BaseURL), http.StatusFound)
 		return
 	}
 
@@ -130,7 +130,7 @@ func (h *Handler) HandleBookmarkAdd(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) HandleBookmarkEdit(w http.ResponseWriter, r *http.Request) {
 	isAuthenticated := h.isAuthenticated(r)
 	if !isAuthenticated {
-		http.Redirect(w, r, fmt.Sprintf("%s/login", h.appConf.BaseURL), http.StatusFound)
+		http.Redirect(w, r, fmt.Sprintf("%slogin", h.appConf.BaseURL), http.StatusFound)
 		return
 	}
 
@@ -209,7 +209,7 @@ func (h *Handler) HandleBookmarkEdit(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) HandleBookmarkDelete(w http.ResponseWriter, r *http.Request) {
 	isAuthenticated := h.isAuthenticated(r)
 	if !isAuthenticated {
-		http.Redirect(w, r, fmt.Sprintf("%s/login", h.appConf.BaseURL), http.StatusFound)
+		http.Redirect(w, r, fmt.Sprintf("%slogin", h.appConf.BaseURL), http.StatusFound)
 		return
 	}
 

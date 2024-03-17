@@ -1,7 +1,9 @@
 package config
 
 import (
+	"fmt"
 	"os"
+	"strings"
 
 	"gopkg.in/yaml.v3"
 )
@@ -43,6 +45,11 @@ func LoadConfig() (*AppConfig, error) {
 	}
 
 	appConfig.AppVersion = appVersion
+
+	// Validate base URL
+	if !strings.HasSuffix(appConfig.BaseURL, "/") {
+		return nil, fmt.Errorf("base URL must have a trailing slash")
+	}
 
 	return appConfig, nil
 }

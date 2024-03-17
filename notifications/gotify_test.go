@@ -45,7 +45,7 @@ func TestSendGotifyMessage(t *testing.T) {
 	}{
 		{
 			testName:    "Successful send",
-			gotifyURL:   "https://example.org",
+			gotifyURL:   "https://example.org/",
 			gotifyToken: "test-token",
 			clientResponse: &http.Response{
 				StatusCode: http.StatusOK,
@@ -54,7 +54,7 @@ func TestSendGotifyMessage(t *testing.T) {
 		},
 		{
 			testName:    "Invalid HTTP status from server",
-			gotifyURL:   "https://example.org",
+			gotifyURL:   "https://example.org/",
 			gotifyToken: "test-token",
 			clientResponse: &http.Response{
 				StatusCode: http.StatusInternalServerError,
@@ -65,7 +65,7 @@ func TestSendGotifyMessage(t *testing.T) {
 		},
 		{
 			testName:      "Client error",
-			gotifyURL:     "https://example.org",
+			gotifyURL:     "https://example.org/",
 			gotifyToken:   "test-token",
 			clientDoError: fmt.Errorf("mock error"),
 			expectedError: "sending a request failed: mock error",
@@ -78,7 +78,7 @@ func TestSendGotifyMessage(t *testing.T) {
 		},
 		{
 			testName:      "Missing gotify token",
-			gotifyURL:     "https://example.org",
+			gotifyURL:     "https://example.org/",
 			gotifyToken:   "",
 			expectedError: "notifications are disabled because Gotify is not configured",
 		},

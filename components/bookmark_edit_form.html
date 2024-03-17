@@ -1,5 +1,5 @@
 {{ define "bookmark_edit_form" }}
-<form method="post" action="{{ .BaseURL}}/admin/bookmarks/{{ .Bookmark.ID }}" id="bookmark-form">
+<form method="post" action="{{ .BaseURL}}admin/bookmarks/{{ .Bookmark.ID }}" id="bookmark-form">
     <div class="input-group">
         <label for="url">URL (required)</label>
         <input type="text" name="url" id="url" value="{{ .Bookmark.URL }}" required aria-required="true" />
