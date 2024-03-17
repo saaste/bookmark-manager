@@ -13,11 +13,13 @@ const initialize = () => {
     if (theme == "dark") {
         document.documentElement.classList.remove("light")
         modeSwitchLink.setAttribute("aria-label", "Switch to light mode");
+        modeSwitchLink.setAttribute("title", "Switch to light mode");
         modeSwitchIcon.setAttribute("src", `${baseUrl}assets/light.png`);
         modeSwitchIcon.setAttribute("alt", "Sun icon");
     } else {
         document.documentElement.classList.add("light");
         modeSwitchLink.setAttribute("aria-label", "Switch to dark mode");
+        modeSwitchLink.setAttribute("title", "Switch to dark mode");
         modeSwitchIcon.setAttribute("src", `${baseUrl}assets/dark.png`);
         modeSwitchIcon.setAttribute("alt", "Moon icon");
     }
@@ -30,12 +32,14 @@ const initialize = () => {
             localStorage.setItem("theme", "light");
             document.documentElement.classList.add("light");
             modeSwitchLink.setAttribute("aria-label", "Switch to dark mode");
+            modeSwitchLink.setAttribute("title", "Switch to dark mode");
             modeSwitchIcon.setAttribute("src", `${baseUrl}assets/dark.png`);
             modeSwitchIcon.setAttribute("alt", "Moon icon");
         } else {
             localStorage.setItem("theme", "dark");
             document.documentElement.classList.remove("light")
             modeSwitchLink.setAttribute("aria-label", "Switch to light mode");
+            modeSwitchLink.setAttribute("title", "Switch to light mode");
             modeSwitchIcon.setAttribute("src", `${baseUrl}assets/light.png`);
             modeSwitchIcon.setAttribute("alt", "Sun icon");
         }

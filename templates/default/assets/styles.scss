@@ -372,15 +372,17 @@ button.warning {
     }
 }
 
-$light-page-background-color: #e4e4e4;
+$light-page-background-color: #d8d8d8;
 $light-page-text-color: #1d1d1d;
-$light-link-color: #853500;
-$light-link-text-shadow: 0 0 5px #cc5a1880;
+$light-link-color: #810085;
+$light-link-text-shadow: 0 0 5px #ba3fbe80;
 $light-footer-text-color: #3d3d3d;
 $light-warning-color: rgb(136, 0, 0);
 
-$light-input-background-color: #ccc;
-$light-input-border-color: #bbb;
+$light-bookmark-background-color: #cacaca;
+
+$light-input-background-color: #bdbdbd;
+$light-input-border-color: #aaaaaa;
 $light-input-warning-border-color: #b85252;
 $light-input-disabled-border-color: #dadada;
 
@@ -463,7 +465,7 @@ html.light {
 
     #bookmarks {
         .bookmark {
-            background-color: #d1d1d1;
+            background-color: $light-bookmark-background-color;
         }
     }
 

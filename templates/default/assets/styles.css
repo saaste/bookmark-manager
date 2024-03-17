@@ -297,14 +297,14 @@ button.warning {
   }
 }
 html.light body {
-  background-color: #e4e4e4;
+  background-color: #d8d8d8;
   color: #1d1d1d;
 }
 html.light a {
-  color: #853500;
+  color: #810085;
 }
 html.light a:hover, html.light a:focus {
-  text-shadow: 0 0 5px rgba(204, 90, 24, 0.5019607843);
+  text-shadow: 0 0 5px rgba(186, 63, 190, 0.5019607843);
 }
 html.light header {
   border-bottom: 1px dashed #1d1d1d;
@@ -321,14 +321,14 @@ html.light footer a {
 html.light input,
 html.light textarea,
 html.light button {
-  background-color: #ccc;
+  background-color: #bdbdbd;
   color: #1d1d1d;
-  border: 2px solid #bbb;
+  border: 2px solid #aaaaaa;
 }
 html.light input[disabled],
 html.light textarea[disabled],
 html.light button[disabled] {
-  border: 2px solid #ccc;
+  border: 2px solid #bdbdbd;
   background-color: #dadada;
   color: #888;
 }
@@ -354,7 +354,7 @@ html.light button.warning {
   border-color: rgb(117, 27, 27);
 }
 html.light #bookmarks .bookmark {
-  background-color: #d1d1d1;
+  background-color: #cacaca;
 }
 html.light .info-box {
   background-color: #ccc;
