@@ -38,7 +38,7 @@ func (h *Handler) HandleFeed(w http.ResponseWriter, r *http.Request) {
 		SiteName:    h.appConf.SiteName,
 		Description: h.appConf.Description,
 		BaseURL:     h.appConf.BaseURL,
-		CurrentURL:  h.getCurrentURL(r, h.appConf),
+		CurrentURL:  h.getCurrentURL(r),
 		AuthorName:  h.appConf.AuthorName,
 		AuthorEmail: h.appConf.AuthorEmail,
 	}

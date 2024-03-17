@@ -83,7 +83,7 @@ func (h *Handler) defaultTemplateData(w http.ResponseWriter, r *http.Request, is
 	data.Description = h.appConf.Description
 	data.BaseURL = h.appConf.BaseURL
 	data.AppVersion = h.appConf.AppVersion
-	data.CurrentURL = h.getCurrentURL(r, h.appConf)
+	data.CurrentURL = h.getCurrentURL(r)
 	data.IsAuthenticated = isAuthenticated
 	data.BrokenBookmarksExist = brokenBookmarksExist
 

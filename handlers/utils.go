@@ -11,7 +11,6 @@ import (
 	"strings"
 
 	"github.com/saaste/bookmark-manager/bookmarks"
-	"github.com/saaste/bookmark-manager/config"
 )
 
 func (h *Handler) getBookmarksWithPagination(isAuthenticated bool, q, tags string, page, pageSize int) (*bookmarks.BookmarkResult, error) {
@@ -129,8 +128,9 @@ func (h *Handler) getPages(currentPage, pageCount int) []Page {
 	return pages
 }
 
-func (h *Handler) getCurrentURL(r *http.Request, appConf *config.AppConfig) string {
-	return fmt.Sprintf("%s%s", appConf.BaseURL, r.RequestURI)
+func (h *Handler) getCurrentURL(r *http.Request) string {
+	requestURI := strings.TrimPrefix(r.RequestURI, "/")
+	return fmt.Sprintf("%s%s", h.appConf.BaseURL, requestURI)
 }
 
 func (h *Handler) getAnchorURL(r *http.Request, id string) string {
