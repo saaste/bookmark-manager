@@ -66,8 +66,8 @@ func (h *Handler) HandleTags(w http.ResponseWriter, r *http.Request) {
 	h.parseTemplateWithFunc("index.html", r, w, data)
 }
 
-func (h *Handler) defaultTemplateData(w http.ResponseWriter, r *http.Request, isAuthenticated bool) templateData {
-	data := templateData{}
+func (h *Handler) defaultTemplateData(w http.ResponseWriter, r *http.Request, isAuthenticated bool) TemplateData {
+	data := TemplateData{}
 
 	brokenBookmarksExist := false
 	if isAuthenticated {

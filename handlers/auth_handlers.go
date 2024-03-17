@@ -12,7 +12,7 @@ func (h *Handler) HandleLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	type loginTemplateData struct {
-		templateData
+		TemplateData
 		Error string
 	}
 
@@ -20,7 +20,7 @@ func (h *Handler) HandleLogin(w http.ResponseWriter, r *http.Request) {
 	baseData.Title = "Login"
 
 	data := loginTemplateData{
-		templateData: baseData,
+		TemplateData: baseData,
 	}
 
 	if r.Method == http.MethodPost {

@@ -13,7 +13,7 @@ type Page struct {
 	IsActive bool
 }
 
-type templateData struct {
+type TemplateData struct {
 	SiteName             string
 	Description          string
 	BaseURL              string
@@ -30,7 +30,7 @@ type templateData struct {
 }
 
 type adminTemplateData struct {
-	templateData
+	TemplateData
 	Errors   map[string]string
 	Bookmark *bookmarks.Bookmark
 	Tags     string

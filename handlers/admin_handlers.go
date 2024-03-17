@@ -80,7 +80,7 @@ func (h *Handler) HandleBookmarkAdd(w http.ResponseWriter, r *http.Request) {
 	baseData.Title = "Add Bookmark"
 
 	data := adminTemplateData{
-		templateData: baseData,
+		TemplateData: baseData,
 		Errors:       make(map[string]string),
 		Bookmark:     &bookmarks.Bookmark{},
 		Tags:         "",
@@ -157,7 +157,7 @@ func (h *Handler) HandleBookmarkEdit(w http.ResponseWriter, r *http.Request) {
 	baseData.Title = "Edit Bookmark"
 
 	data := adminTemplateData{
-		templateData: baseData,
+		TemplateData: baseData,
 		Errors:       make(map[string]string),
 		Bookmark:     bookmark,
 		Tags:         strings.Join(bookmark.Tags, " "),
@@ -237,7 +237,7 @@ func (h *Handler) HandleBookmarkDelete(w http.ResponseWriter, r *http.Request) {
 	baseData.Title = "Delete Bookmark"
 
 	data := adminTemplateData{
-		templateData: baseData,
+		TemplateData: baseData,
 		Bookmark:     bookmark,
 	}
 
