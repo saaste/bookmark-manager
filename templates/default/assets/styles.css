@@ -13,7 +13,6 @@ body {
 
 h1 {
   font-size: 1.5em;
-  padding-bottom: 0.5em;
   text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
 }
 
@@ -121,10 +120,9 @@ header {
   align-items: baseline;
   padding-bottom: 1em;
 }
-header .auth-nav {
-  white-space: nowrap;
+header .nav {
   display: flex;
-  flex-wrap: wrap;
+  white-space: nowrap;
   gap: 0.5em;
 }
 header h1 {
@@ -133,6 +131,9 @@ header h1 {
 header h1 a {
   color: #F8F8F2;
   text-decoration: none;
+}
+header img {
+  vertical-align: middle;
 }
 
 #search {
@@ -294,6 +295,73 @@ button.warning {
   .mobile-helper {
     display: block;
   }
+}
+html.light body {
+  background-color: #e4e4e4;
+  color: #1d1d1d;
+}
+html.light a {
+  color: #853500;
+}
+html.light a:hover, html.light a:focus {
+  text-shadow: 0 0 5px rgba(204, 90, 24, 0.5019607843);
+}
+html.light header {
+  border-bottom: 1px dashed #1d1d1d;
+}
+html.light header h1 a {
+  color: #1d1d1d;
+}
+html.light footer {
+  color: #3d3d3d;
+}
+html.light footer a {
+  color: #1d1d1d;
+}
+html.light input,
+html.light textarea,
+html.light button {
+  background-color: #ccc;
+  color: #1d1d1d;
+  border: 2px solid #bbb;
+}
+html.light input[disabled],
+html.light textarea[disabled],
+html.light button[disabled] {
+  border: 2px solid #ccc;
+  background-color: #dadada;
+  color: #888;
+}
+html.light input:focus,
+html.light textarea:focus,
+html.light button:focus {
+  box-shadow: 0 0 15px rgba(136, 136, 136, 0.5019607843);
+}
+html.light input.invalid,
+html.light textarea.invalid,
+html.light button.invalid {
+  border: 2px solid #b85252;
+}
+html.light button {
+  background-color: #acbe7b;
+  border: 2px solid #84925e;
+}
+html.light button:hover {
+  box-shadow: 0 0 8px rgba(153, 153, 153, 0.5019607843);
+}
+html.light button.warning {
+  background-color: rgb(173, 36, 36);
+  border-color: rgb(117, 27, 27);
+}
+html.light #bookmarks .bookmark {
+  background-color: #d1d1d1;
+}
+html.light .info-box {
+  background-color: #ccc;
+  border-color: #bbb;
+}
+html.light .warning {
+  color: rgb(136, 0, 0);
 }
 
 /*# sourceMappingURL=styles.css.map */

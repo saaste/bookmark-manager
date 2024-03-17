@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="/assets/styles.css">
 
     {{ template "headers" . }}
+
+    <script type="module" src="/assets/dark-light.js"></script>
 </head>
 <body>
     <div id="container">
@@ -23,10 +25,13 @@
                 {{ if .BrokenBookmarksExist }}
                 <a href="{{ .BaseURL }}admin/bookmarks/broken" class="warning">Broken Bookmarks</a> |
                 {{ end}}
-                <a href="{{ .BaseURL }}logout">Log out</a>
+                <a href="{{ .BaseURL }}logout">Log out</a> |
                 {{ else }}
-                <a href="{{ .BaseURL }}login">Log in</a>
+                <a href="{{ .BaseURL }}login">Log in</a> |
                 {{ end }}
+                <a href="#" id="mode-switch" aria-label="Switch to light mode">
+                    <img src="{{ .BaseURL }}assets/light.png" alt="Sun icon" id="mode-switch-icon" class="icon">
+                </a>
             </nav>
         </header>
 
