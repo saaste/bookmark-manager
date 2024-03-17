@@ -37,15 +37,7 @@ func (h *Handler) HandleLogin(w http.ResponseWriter, r *http.Request) {
 				h.internalServerError(w, "Failed to calculate password hash", err)
 				return
 			}
-			http.SetCookie(w, &http.Cookie{
-				Name:     "auth",
-				Value:    hash,
-				Path:     "/",
-				HttpOnly: true,
-				Secure:   false,
-				SameSite: http.SameSiteLaxMode,
-				MaxAge:   60 * 60 * 24 * 30,
-			})
+			h.auth.SetCookie(w, hash)
 			http.Redirect(w, r, h.appConf.BaseURL, http.StatusFound)
 			return
 		}

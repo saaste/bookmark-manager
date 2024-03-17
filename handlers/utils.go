@@ -90,7 +90,7 @@ func (h *Handler) isAuthenticated(w http.ResponseWriter, r *http.Request) bool {
 	isValid := h.auth.IsValid(cookie)
 
 	if isValid {
-		h.auth.UpdateCookie(w, cookie)
+		h.auth.SetCookie(w, cookie.Value)
 	}
 
 	return h.auth.IsValid(cookie)
