@@ -13,7 +13,7 @@ let tagsInput;
 let allTags;
 let tagSuggestions;
 
-window.onload = () => {
+const initialize = () => {
     baseUrl = document.querySelector("base").attributes.getNamedItem("href").value;
     scrape = document.getElementById("scrape");
     url = document.getElementById("url");
@@ -194,3 +194,5 @@ const validateForm = () => {
     })
     submitButton.disabled = !isValid
 }
+
+window.addEventListener("load", initialize)

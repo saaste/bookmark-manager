@@ -1,5 +1,5 @@
 export const getMetadata = (baseUrl, targetUrl) => {
-    let url = `${baseUrl}/api/metadata?url=${targetUrl}`
+    let url = `${baseUrl}api/metadata?url=${targetUrl}`
     return fetch(url, { method: 'GET' })
     .then(resp => {
         if (!resp.ok) {
@@ -14,7 +14,7 @@ export const getMetadata = (baseUrl, targetUrl) => {
 }
 
 export const getTags = (baseUrl) => {
-    let url = `${baseUrl}/api/tags`
+    let url = `${baseUrl}api/tags`
     return fetch(url, { method: 'GET' })
     .then(resp => {
         if (!resp.ok) {

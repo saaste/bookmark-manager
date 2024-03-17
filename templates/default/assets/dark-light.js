@@ -1,4 +1,4 @@
-window.onload = () => {
+const initialize = () => {
     let modeSwitchLink = document.getElementById("mode-switch");
     let modeSwitchIcon = document.getElementById("mode-switch-icon")
     let baseUrl = document.querySelector("base").attributes.getNamedItem("href").value;
@@ -41,3 +41,5 @@ window.onload = () => {
         }
     });
 }
+
+window.addEventListener("load", initialize);
