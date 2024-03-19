@@ -95,14 +95,20 @@ const handleTagsKeyUp = (e) => {
     matchingTags.forEach((tag) => {
         let option = document.createElement("li");
         option.innerHTML = tag;
+        option.classList.add("tag-option");
         option.setAttribute("tabindex", "0");
         option.addEventListener("keyup", handleTagSuggestionKeyUp);
         option.addEventListener("click", handleTagSuggestionClick);
         tagOptions.push(option);
     })
 
-    tagSuggestions.replaceChildren(...tagOptions);
+    if (tagOptions.length > 0) {
+        tagSuggestions.classList.remove("hidden");
+    } else {
+        tagSuggestions.classList.add("hidden");
+    }
 
+    tagSuggestions.replaceChildren(...tagOptions);
     if (e.key == "ArrowDown" && tagOptions.length > 0) {
         tagSuggestions.children[0].focus();
         return;
@@ -193,6 +199,10 @@ const validateForm = () => {
         }
     })
     submitButton.disabled = !isValid
+
+    let urlField = document.getElementById("url")
+    scrape.disabled = !urlField.value.trim();
+
 }
 
 window.addEventListener("load", initialize)

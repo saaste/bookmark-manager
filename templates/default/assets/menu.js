@@ -10,10 +10,10 @@ const handleMenuClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
 
-    if (menuItems.classList.contains("hidden-mobile")) {
-        menuItems.classList.remove("hidden-mobile");
+    if (menuItems.classList.contains("desktop-only")) {
+        menuItems.classList.remove("desktop-only");
     } else {
-        menuItems.classList.add("hidden-mobile");
+        menuItems.classList.add("desktop-only");
     }
 }
 

@@ -26,7 +26,7 @@
         <textarea name="description" id="description" rows="4">{{ .Bookmark.Description }}</textarea>
     </div>
     
-    <div class="input-group horizontal">
+    <div class="input-group checkbox">
         <input type="checkbox" name="is_private" id="is_private" value="1" {{ if .Bookmark.IsPrivate }}checked{{end}} />
         <label for="is_private">Private</label>
     </div>
@@ -34,7 +34,7 @@
     <div class="input-group">
         <label for="tags">Tags (separated with spaces)</label>
         <input type="text" name="tags" id="tags" value="{{ .Tags }}" autocomplete="off" />
-        <ul id="tag-suggestions" class="autocomplete"></ul>
+        <ul id="tag-suggestions" class="autocomplete hidden"></ul>
     </div>
 
     <button type="submit">Add</button>
