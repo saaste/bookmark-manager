@@ -109,7 +109,8 @@ func (h *Handler) HandleBookmarkAdd(w http.ResponseWriter, r *http.Request) {
 		data.Bookmark.IsWorking = true
 
 		data.Tags = r.Form.Get("tags")
-		if len(strings.TrimSpace(data.Tags)) > 0 {
+		data.Tags = strings.TrimSpace(data.Tags)
+		if len(data.Tags) > 0 {
 			data.Bookmark.Tags = strings.Split(data.Tags, " ")
 		}
 
@@ -186,7 +187,8 @@ func (h *Handler) HandleBookmarkEdit(w http.ResponseWriter, r *http.Request) {
 		data.Bookmark.Created = time.Now().UTC()
 
 		data.Tags = r.Form.Get("tags")
-		if len(strings.TrimSpace(data.Tags)) > 0 {
+		data.Tags = strings.TrimSpace(data.Tags)
+		if len(data.Tags) > 0 {
 			data.Bookmark.Tags = strings.Split(data.Tags, " ")
 		} else {
 			data.Bookmark.Tags = make([]string, 0)
