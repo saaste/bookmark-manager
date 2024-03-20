@@ -158,6 +158,10 @@
     align-items: baseline;
 }
 
+.url {
+    flex: auto;
+}
+
 .autocomplete {
     display: flex;
     flex-direction: column;

@@ -2,7 +2,7 @@
 <form method="post" action="{{ .BaseURL}}admin/bookmarks/{{ .Bookmark.ID }}" id="bookmark-form">
     <div class="input-group">
         <label for="url">URL (required)</label>
-        <input type="text" name="url" id="url" value="{{ .Bookmark.URL }}" required aria-required="true" />
+        <input type="text" name="url" id="url" value="{{ .Bookmark.URL }}" required aria-required="true" class="url" />
         {{ if index .Errors "url" }}
         <span class="warning">{{ index .Errors "url" }}</span>
         {{ end }}

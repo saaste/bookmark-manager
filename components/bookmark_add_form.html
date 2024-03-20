@@ -3,7 +3,7 @@
     <div class="input-group">
         <label for="url">URL (required)</label>
         <div class="input-group horizontal">
-            <input type="text" name="url" id="url" value="{{ .Bookmark.URL }}" required aria-required="true" />
+            <input type="text" name="url" id="url" value="{{ .Bookmark.URL }}" required aria-required="true" class="url" />
             <button type="button" id="scrape">Fetch Metadata</button>
         </div>
         <div id="fetching-metadata-message" role="alert" aria-live="assertive" class="hidden progress-indicator">
