@@ -201,7 +201,9 @@ const validateForm = () => {
     submitButton.disabled = !isValid
 
     let urlField = document.getElementById("url")
-    scrape.disabled = !urlField.value.trim();
+    if (scrape) {
+        scrape.disabled = !urlField.value.trim();
+    }
 
 }
 
