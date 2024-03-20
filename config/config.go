@@ -10,7 +10,7 @@ import (
 
 const (
 	confFile   string = "config.yml"
-	appVersion string = "0.0.1"
+	appVersion string = "1.0.0"
 )
 
 type AppConfig struct {
