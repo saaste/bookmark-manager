@@ -3,6 +3,8 @@ You can customize the interface by creating a new theme. Themes are located in t
 
 If you are creating a new theme, it is probably easiest to use the `default` template as a base. Any static assets required by the theme must be in the `assets` subdirectory.
 
+Templates are created using [Go's standard template syntax](https://golangdocs.com/templates-in-golang).
+
 
 ## Available template variables
 
