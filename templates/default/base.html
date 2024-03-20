@@ -7,10 +7,11 @@
     <meta name="description" content="{{ .Description }}">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{{ .Title }} | {{ .SiteName }}</title>
-    <link rel="stylesheet" href="/assets/reset.css">
-    <link rel="stylesheet" href="/assets/styles.css">
+    <link rel="stylesheet" href="{{ .BaseURL }}assets/reset.css">
+    <link rel="stylesheet" href="{{ .BaseURL }}assets/styles.css">
+    <link rel="icon" type="image/x-icon" href="{{ .BaseURL }}assets/favicon.ico">
     {{ template "headers" . }}
-    <script type="module" src="/assets/menu.js"></script>
+    <script type="module" src="{{ .BaseURL }}assets/menu.js"></script>
 </head>
 <body class="dark">
     <div class="page-container">
