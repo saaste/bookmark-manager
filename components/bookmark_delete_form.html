@@ -1,0 +1,16 @@
+{{ define "bookmark_delete_form" }}
+<form method="post" action="{{ .BaseURL}}admin/bookmarks/{{ .Bookmark.ID }}/delete">
+    <div class="input-group">
+        <p>Are you sure you want to delete the following bookmark?</p>
+    </div>
+    
+    <div class="input-group">
+        <div class="info-box">
+            <h3 class="info-box-title">{{ .Bookmark.Title }}</h3>
+            {{ if .Bookmark.Description }}<p>{{ .Bookmark.Description }}</p>{{ end }}
+        </div>
+    </div>
+
+    <button type="submit" class="warning">Delete</button>
+</form>
+{{ end }}

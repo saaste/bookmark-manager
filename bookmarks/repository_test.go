@@ -5,13 +5,17 @@ import (
 	"testing"
 	"time"
 
-	"github.com/saaste/bookmark-manager/migrations"
+	"github.com/saaste/bookmark-manager/test_utils"
 	"github.com/stretchr/testify/assert"
 )
 
+const (
+	dbFileName string = "repository_tests.db"
+)
+
 func TestCreate(t *testing.T) {
-	db := initTestDatabase(t)
-	defer db.Close()
+	db := test_utils.InitTestDatabase(t, dbFileName)
+	defer test_utils.DestroyTestDatabase(t, db, dbFileName)
 
 	repo := NewSqliteRepository(db)
 
@@ -31,8 +35,8 @@ func TestCreate(t *testing.T) {
 }
 
 func TestUpdate(t *testing.T) {
-	db := initTestDatabase(t)
-	defer db.Close()
+	db := test_utils.InitTestDatabase(t, dbFileName)
+	defer test_utils.DestroyTestDatabase(t, db, dbFileName)
 
 	repo := NewSqliteRepository(db)
 
@@ -61,8 +65,8 @@ func TestUpdate(t *testing.T) {
 }
 
 func TestGet(t *testing.T) {
-	db := initTestDatabase(t)
-	defer db.Close()
+	db := test_utils.InitTestDatabase(t, dbFileName)
+	defer test_utils.DestroyTestDatabase(t, db, dbFileName)
 
 	repo := NewSqliteRepository(db)
 
@@ -80,8 +84,8 @@ func TestGet(t *testing.T) {
 }
 
 func TestDelete(t *testing.T) {
-	db := initTestDatabase(t)
-	defer db.Close()
+	db := test_utils.InitTestDatabase(t, dbFileName)
+	defer test_utils.DestroyTestDatabase(t, db, dbFileName)
 
 	repo := NewSqliteRepository(db)
 
@@ -99,8 +103,8 @@ func TestDelete(t *testing.T) {
 }
 
 func TestGetAll(t *testing.T) {
-	db := initTestDatabase(t)
-	defer db.Close()
+	db := test_utils.InitTestDatabase(t, dbFileName)
+	defer test_utils.DestroyTestDatabase(t, db, dbFileName)
 
 	repo := NewSqliteRepository(db)
 
@@ -143,8 +147,8 @@ func TestGetAll(t *testing.T) {
 }
 
 func TestGetPrivate(t *testing.T) {
-	db := initTestDatabase(t)
-	defer db.Close()
+	db := test_utils.InitTestDatabase(t, dbFileName)
+	defer test_utils.DestroyTestDatabase(t, db, dbFileName)
 
 	repo := NewSqliteRepository(db)
 
@@ -179,8 +183,8 @@ func TestGetPrivate(t *testing.T) {
 }
 
 func TestGetByTags(t *testing.T) {
-	db := initTestDatabase(t)
-	defer db.Close()
+	db := test_utils.InitTestDatabase(t, dbFileName)
+	defer test_utils.DestroyTestDatabase(t, db, dbFileName)
 
 	repo := NewSqliteRepository(db)
 
@@ -223,8 +227,8 @@ func TestGetByTags(t *testing.T) {
 }
 
 func TestGetByKeyword(t *testing.T) {
-	db := initTestDatabase(t)
-	defer db.Close()
+	db := test_utils.InitTestDatabase(t, dbFileName)
+	defer test_utils.DestroyTestDatabase(t, db, dbFileName)
 
 	repo := NewSqliteRepository(db)
 
@@ -268,8 +272,8 @@ func TestGetByKeyword(t *testing.T) {
 }
 
 func TestGetTags(t *testing.T) {
-	db := initTestDatabase(t)
-	defer db.Close()
+	db := test_utils.InitTestDatabase(t, dbFileName)
+	defer test_utils.DestroyTestDatabase(t, db, dbFileName)
 
 	repo := NewSqliteRepository(db)
 
@@ -299,8 +303,8 @@ func TestGetTags(t *testing.T) {
 }
 
 func TestGetAllWithoutPagination(t *testing.T) {
-	db := initTestDatabase(t)
-	defer db.Close()
+	db := test_utils.InitTestDatabase(t, dbFileName)
+	defer test_utils.DestroyTestDatabase(t, db, dbFileName)
 
 	repo := NewSqliteRepository(db)
 
@@ -330,8 +334,8 @@ func TestGetAllWithoutPagination(t *testing.T) {
 }
 
 func TestGetBrokenBookmarks(t *testing.T) {
-	db := initTestDatabase(t)
-	defer db.Close()
+	db := test_utils.InitTestDatabase(t, dbFileName)
+	defer test_utils.DestroyTestDatabase(t, db, dbFileName)
 
 	repo := NewSqliteRepository(db)
 
@@ -360,23 +364,34 @@ func TestGetBrokenBookmarks(t *testing.T) {
 	assert.Equal(t, bookmark3.ID, result[1].ID)
 }
 
-func initTestDatabase(t *testing.T) *sql.DB {
-	db, err := sql.Open("sqlite3", "test_data/test.db")
+func TestBrokenBookmarksExist(t *testing.T) {
+	db := test_utils.InitTestDatabase(t, dbFileName)
+	defer test_utils.DestroyTestDatabase(t, db, dbFileName)
+
+	repo := NewSqliteRepository(db)
+
+	bookmark1 := createBookmark(false)
+	_, err := repo.Create(bookmark1)
 	assert.Nil(t, err)
 
-	err = migrations.RunMigrations(db)
+	bookmark2 := createBookmark(false)
+	_, err = repo.Create(bookmark2)
 	assert.Nil(t, err)
 
-	_, err = db.Exec("DELETE FROM bookmark_tags")
+	result, err := repo.BrokenBookmarksExist()
+	assert.Nil(t, err)
+	assert.False(t, result)
+
+	bookmark3 := createBookmark(true)
+	bookmark3.IsWorking = false
+	_, err = repo.Create(bookmark3)
 	assert.Nil(t, err)
 
-	_, err = db.Exec("DELETE FROM bookmarks")
+	result, err = repo.BrokenBookmarksExist()
 	assert.Nil(t, err)
+	assert.True(t, result)
 
-	return db
 }
-
-// TODO: Destroy database after test run
 
 func createBookmark(isPrivate bool) *Bookmark {
 	return &Bookmark{

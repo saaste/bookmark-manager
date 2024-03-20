@@ -6,7 +6,6 @@ require (
 	github.com/PuerkitoBio/goquery v1.9.1
 	github.com/go-chi/chi/v5 v5.0.12
 	github.com/go-chi/render v1.0.3
-	github.com/gorilla/feeds v1.1.2
 	github.com/mattn/go-sqlite3 v1.14.22
 	github.com/stretchr/testify v1.9.0
 	golang.org/x/crypto v0.21.0

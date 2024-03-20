@@ -8,7 +8,13 @@ site_name: Bookmark Manager
 # Used in meta tag and in RSS feed
 description: My personal bookmark collection
 
-# Base URL of the site
+# Author's name. Shown in feeds
+author_name: ""
+
+# Author's email address. Shown in feeds
+author_email: ""
+
+# Base URL of the site with a trailing slash (e.g https://example.com/)
 base_url: http://localhost:8000                 
 
 # Password required for managing bookmarks
@@ -43,7 +49,7 @@ template: default
 # Use Gotify notifications
 gotify_enabled: false
 
-# Gotify base url
+# Gotify base url with a trailing slash (e.g. https://example.com/push/)
 # gotify_url: https://mygotifyinstance.com
 
 # Gotify app token

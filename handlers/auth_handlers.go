@@ -5,26 +5,22 @@ import (
 )
 
 func (h *Handler) HandleLogin(w http.ResponseWriter, r *http.Request) {
-	isAuthenticated := h.isAuthenticated(r)
+	isAuthenticated := h.isAuthenticated(w, r)
 	if isAuthenticated {
 		http.Redirect(w, r, h.appConf.BaseURL, http.StatusFound)
 		return
 	}
 
 	type loginTemplateData struct {
-		templateData
+		TemplateData
 		Error string
 	}
 
+	baseData := h.defaultTemplateData(w, r, isAuthenticated)
+	baseData.Title = "Login"
+
 	data := loginTemplateData{
-		templateData: templateData{
-			SiteName:        h.appConf.SiteName,
-			Description:     h.appConf.Description,
-			BaseURL:         h.appConf.BaseURL,
-			CurrentURL:      h.getCurrentURL(r, h.appConf),
-			IsAuthenticated: isAuthenticated,
-			Title:           "Login",
-		},
+		TemplateData: baseData,
 	}
 
 	if r.Method == http.MethodPost {
@@ -41,14 +37,7 @@ func (h *Handler) HandleLogin(w http.ResponseWriter, r *http.Request) {
 				h.internalServerError(w, "Failed to calculate password hash", err)
 				return
 			}
-			http.SetCookie(w, &http.Cookie{
-				Name:     "auth",
-				Value:    hash,
-				Path:     "/",
-				HttpOnly: true,
-				Secure:   false,
-				SameSite: http.SameSiteLaxMode,
-			})
+			h.auth.SetCookie(w, hash)
 			http.Redirect(w, r, h.appConf.BaseURL, http.StatusFound)
 			return
 		}

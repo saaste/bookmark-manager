@@ -6,11 +6,11 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"os"
 	"strconv"
 	"strings"
 
 	"github.com/saaste/bookmark-manager/bookmarks"
-	"github.com/saaste/bookmark-manager/config"
 )
 
 func (h *Handler) getBookmarksWithPagination(isAuthenticated bool, q, tags string, page, pageSize int) (*bookmarks.BookmarkResult, error) {
@@ -27,18 +27,44 @@ func (h *Handler) getBookmarksWithPagination(isAuthenticated bool, q, tags strin
 }
 
 func (h *Handler) parseTemplateWithFunc(templateFile string, r *http.Request, w http.ResponseWriter, data any) {
-	t, err := template.New("foo").
+	templateFiles := []string{
+		h.getTemplateFile("base.html"),
+		h.getTemplateFile(templateFile),
+	}
+
+	entries, err := os.ReadDir("components")
+	if err != nil {
+		h.internalServerError(w, "Reading UI components failed", err)
+		return
+	}
+	for _, entry := range entries {
+		if !entry.IsDir() && strings.HasSuffix(entry.Name(), ".html") {
+			templateFiles = append(templateFiles, fmt.Sprintf("components/%s", entry.Name()))
+		}
+	}
+
+	t, err := template.New("").
 		Funcs(template.FuncMap{
 			"paginationUrl": func(pageNumber int) string {
 				return h.getCurrentURIWithParam(r, "page", pageNumber)
 			},
-			"feedUrl": func() string {
-				return h.getFeedURL(r)
+			"feedUrl": func(feedType string) string {
+				switch strings.ToLower(feedType) {
+				case "atom":
+					return h.getFeedURL(r, FeedTypeAtom)
+				case "rss":
+					return h.getFeedURL(r, FeedTypeRSS)
+				case "json":
+					return h.getFeedURL(r, FeedTypeJSON)
+				default:
+					return "invalid feed type"
+				}
+
 			},
 			"anchorUrl": func(id string) string {
 				return h.getAnchorURL(r, id)
 			},
-		}).ParseFiles(h.getTemplateFile("base.html"), h.getTemplateFile(templateFile))
+		}).ParseFiles(templateFiles...)
 	if err != nil {
 		h.internalServerError(w, fmt.Sprintf("Failed to parse template %s", templateFile), err)
 		return
@@ -52,14 +78,21 @@ func (h *Handler) parseTemplateWithFunc(templateFile string, r *http.Request, w 
 }
 
 func (h *Handler) getTemplateFile(filename string) string {
-	return fmt.Sprintf("templates/%s/%s", h.appConf.Template, filename)
+	return fmt.Sprintf("templates/%s/%s", h.appConf.Theme, filename)
 }
 
-func (h *Handler) isAuthenticated(r *http.Request) bool {
+func (h *Handler) isAuthenticated(w http.ResponseWriter, r *http.Request) bool {
 	cookie, err := r.Cookie("auth")
 	if err != nil {
 		return false
 	}
+
+	isValid := h.auth.IsValid(cookie)
+
+	if isValid {
+		h.auth.SetCookie(w, cookie.Value)
+	}
+
 	return h.auth.IsValid(cookie)
 }
 
@@ -102,25 +135,36 @@ func (h *Handler) getPages(currentPage, pageCount int) []Page {
 	return pages
 }
 
-func (h *Handler) getCurrentURL(r *http.Request, appConf *config.AppConfig) string {
-	return fmt.Sprintf("%s%s", appConf.BaseURL, r.RequestURI)
+func (h *Handler) getCurrentURL(r *http.Request) string {
+	requestURI := strings.TrimPrefix(r.RequestURI, "/")
+	return fmt.Sprintf("%s%s", h.appConf.BaseURL, requestURI)
 }
 
 func (h *Handler) getAnchorURL(r *http.Request, id string) string {
 	return fmt.Sprintf("%s#%s", r.RequestURI, id)
 }
 
-func (h *Handler) getFeedURL(r *http.Request) string {
+func (h *Handler) getFeedURL(r *http.Request, feedType FeedType) string {
 	q := r.URL.Query().Get("q")
 	rawQuery := ""
 	if q != "" {
 		rawQuery = fmt.Sprintf("q=%s", q)
 	}
 
+	var feedPath string
+	switch feedType {
+	case FeedTypeAtom:
+		feedPath = fmt.Sprintf("%s/atom.xml", strings.TrimSuffix(r.URL.Path, "/"))
+	case FeedTypeRSS:
+		feedPath = fmt.Sprintf("%s/rss.xml", strings.TrimSuffix(r.URL.Path, "/"))
+	case FeedTypeJSON:
+		feedPath = fmt.Sprintf("%s/feed.json", strings.TrimSuffix(r.URL.Path, "/"))
+	}
+
 	url := url.URL{
 		Scheme:   r.URL.Scheme,
 		Host:     r.URL.Host,
-		Path:     fmt.Sprintf("%s/feed", strings.TrimSuffix(r.URL.Path, "/")),
+		Path:     feedPath,
 		RawQuery: rawQuery,
 	}
 	return url.String()

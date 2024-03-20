@@ -13,24 +13,24 @@ type Page struct {
 	IsActive bool
 }
 
-type templateData struct {
-	SiteName        string
-	Description     string
-	BaseURL         string
-	Title           string
-	CurrentURL      string
-	IsAuthenticated bool
-	PrivateOnly     bool
-	Bookmarks       []*bookmarks.Bookmark
-	Tags            []string
-	TagFilter       string
-	TextFilter      string
-	Pages           []Page
-	BrokenBookmarks []*bookmarks.Bookmark
+type TemplateData struct {
+	SiteName             string
+	Description          string
+	BaseURL              string
+	Title                string
+	CurrentURL           string
+	IsAuthenticated      bool
+	Bookmarks            []*bookmarks.Bookmark
+	Tags                 []string
+	TagFilter            string
+	TextFilter           string
+	Pages                []Page
+	BrokenBookmarksExist bool
+	AppVersion           string
 }
 
 type adminTemplateData struct {
-	templateData
+	TemplateData
 	Errors   map[string]string
 	Bookmark *bookmarks.Bookmark
 	Tags     string

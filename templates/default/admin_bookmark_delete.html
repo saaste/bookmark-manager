@@ -1,20 +1,10 @@
 {{ define "title" }}Delete a bookmark{{ end }}
 {{ define "content" }}
 
-<section id="bookmarks">
-    <h2>Delete bookmark</h2>
+<section class="admin-form">
+    <h2>Delete a bookmark</h2>
     
-    <form method="post" action="{{ .BaseURL}}/admin/bookmarks/{{ .Bookmark.ID }}/delete">
-        <p>Are you sure you want to delete the following bookmark?</p>
-        
-        <div class="box">
-            <h3>{{ .Bookmark.Title }}</h3>
-            {{ if .Bookmark.Description }}<p>{{ .Bookmark.Description }}</p>{{ end }}
-        </div>
-
-        <button type="submit" class="warning">Delete</button>
-    </form>
-
+    {{ template "bookmark_delete_form" . }}  
 </section>
 
 {{ end }}

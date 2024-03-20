@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/saaste/bookmark-manager/config"
+	"github.com/saaste/bookmark-manager/test_utils"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -22,7 +23,8 @@ func (h MockHttp) Do(req *http.Request) (resp *http.Response, err error) {
 }
 
 func TestCheckBookbarks(t *testing.T) {
-	db := initTestDatabase(t) // TODO: Move initTestDatabse to helpers or something
+	db := test_utils.InitTestDatabase(t, dbFileName)
+	defer test_utils.DestroyTestDatabase(t, db, dbFileName)
 	repo := NewSqliteRepository(db)
 
 	tests := []struct {

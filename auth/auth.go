@@ -37,3 +37,15 @@ func (a *Authenticator) CalculateHash() (string, error) {
 	}
 	return string(bytes), nil
 }
+
+func (a *Authenticator) SetCookie(w http.ResponseWriter, hash string) {
+	http.SetCookie(w, &http.Cookie{
+		Name:     "auth",
+		Value:    hash,
+		Path:     "/",
+		HttpOnly: true,
+		Secure:   false,
+		SameSite: http.SameSiteLaxMode,
+		MaxAge:   60 * 60 * 24 * 7,
+	})
+}

@@ -1,0 +1,42 @@
+{{ define "bookmark_add_form" }}
+<form method="post" action="{{ .BaseURL}}admin/bookmarks/add" id="bookmark-form">
+    <div class="input-group">
+        <label for="url">URL (required)</label>
+        <div class="input-group horizontal">
+            <input type="text" name="url" id="url" value="{{ .Bookmark.URL }}" required aria-required="true" class="url" />
+            <button type="button" id="scrape">Fetch Metadata</button>
+        </div>
+        <div id="fetching-metadata-message" role="alert" aria-live="assertive" class="hidden progress-indicator">
+        </div>
+        {{ if index .Errors "url" }}
+        <span class="warning">{{ index .Errors "url" }}</span>
+        {{ end }}
+    </div>
+    
+    <div class="input-group">
+        <label for="title">Title (required)</label>
+        <input type="text" name="title" id="title" value="{{ .Bookmark.Title }}" required aria-required="true" />
+        {{ if index .Errors "title" }}
+        <span class="warning">{{ index .Errors "title" }}</span>
+        {{ end }}
+    </div>
+    
+    <div class="input-group">
+        <label for="description">Description</label>
+        <textarea name="description" id="description" rows="4">{{ .Bookmark.Description }}</textarea>
+    </div>
+    
+    <div class="input-group checkbox">
+        <input type="checkbox" name="is_private" id="is_private" value="1" {{ if .Bookmark.IsPrivate }}checked{{end}} />
+        <label for="is_private">Private</label>
+    </div>
+
+    <div class="input-group">
+        <label for="tags">Tags (separated with spaces)</label>
+        <input type="text" name="tags" id="tags" value="{{ .Tags }}" autocomplete="off" />
+        <ul id="tag-suggestions" class="autocomplete hidden"></ul>
+    </div>
+
+    <button type="submit">Add</button>
+</form>
+{{ end }}

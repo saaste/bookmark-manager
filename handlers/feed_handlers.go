@@ -3,15 +3,23 @@ package handlers
 import (
 	"io"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/gorilla/feeds"
-	"github.com/saaste/bookmark-manager/bookmarks"
+	"github.com/saaste/bookmark-manager/feeds"
+)
+
+type FeedType int
+
+const (
+	FeedTypeAtom FeedType = iota
+	FeedTypeRSS
+	FeedTypeJSON
 )
 
 func (h *Handler) HandleFeed(w http.ResponseWriter, r *http.Request) {
-	isAuthenticated := h.isAuthenticated(r)
+	isAuthenticated := h.isAuthenticated(w, r)
 	tags := chi.URLParam(r, "tags")
 	q := r.URL.Query().Get("q")
 
@@ -21,37 +29,41 @@ func (h *Handler) HandleFeed(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	h.bookmarksToFeed(bookmarkResult.Bookmarks, w)
-}
-
-func (h *Handler) bookmarksToFeed(bookmarks []*bookmarks.Bookmark, w http.ResponseWriter) {
 	updated := time.Now()
-	if len(bookmarks) > 0 {
-		updated = bookmarks[0].Created
+	if len(bookmarkResult.Bookmarks) > 0 {
+		updated = bookmarkResult.Bookmarks[0].Created
 	}
 
-	feed := &feeds.Feed{
-		Title:       h.appConf.SiteName,
+	feedInfo := feeds.FeedInfo{
+		SiteName:    h.appConf.SiteName,
 		Description: h.appConf.Description,
-		Link:        &feeds.Link{Href: h.appConf.BaseURL, Rel: "self"},
-		Updated:     updated,
+		BaseURL:     h.appConf.BaseURL,
+		CurrentURL:  h.getCurrentURL(r),
+		AuthorName:  h.appConf.AuthorName,
+		AuthorEmail: h.appConf.AuthorEmail,
 	}
 
-	for _, bm := range bookmarks {
-		feed.Items = append(feed.Items, &feeds.Item{
-			Title:       bm.Title,
-			Link:        &feeds.Link{Href: bm.URL},
-			Description: bm.Description,
-			Updated:     bm.Created,
-		})
+	var content string
+	switch true {
+	case strings.HasSuffix(r.URL.Path, "atom.xml"):
+		w.Header().Set("Content-Type", "application/atom+xml; charset=utf-8")
+		content = feeds.ToAtom(feedInfo, bookmarkResult.Bookmarks)
+	case strings.HasSuffix(r.URL.Path, "rss.xml"):
+		w.Header().Set("Content-Type", "application/rss+xml; charset=utf-8")
+		content = feeds.ToRSS(feedInfo, bookmarkResult.Bookmarks)
+	case strings.HasSuffix(r.URL.Path, "feed.json"):
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		content, err = feeds.ToJSON(feedInfo, bookmarkResult.Bookmarks)
+	default:
+		http.Error(w, "Invalid feed type", http.StatusBadRequest)
 	}
 
-	atom, err := feed.ToAtom()
 	if err != nil {
-		h.internalServerError(w, "Failed to create atom feed", err)
+		h.internalServerError(w, "Generating feed failed", err)
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/atom+xml")
-	io.WriteString(w, atom)
+	w.Header().Set("Last-Modified", updated.Format(time.RFC1123))
+	io.WriteString(w, content)
+
 }

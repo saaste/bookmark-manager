@@ -1,0 +1,42 @@
+@import "base.scss";
+
+.page-container {
+    max-width: $page-max-width;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+}
+
+.header-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    padding-bottom: 1rem;
+    border-bottom: 2px dotted var(--color-primary);
+}
+
+.main-container {
+    display: grid;
+    grid-template-columns: auto minmax(250px, min-content);
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+        "main search"
+        "main tags";
+    padding-top: 2rem;
+    column-gap: 2rem;
+}
+
+.footer-container {
+    display: flex;
+    flex-direction: column;
+    padding-top: 2rem;
+    text-align: center;
+}
+
+@media only screen and (max-width: $mobile-max-width) {
+    .main-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+}

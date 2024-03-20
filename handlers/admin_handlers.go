@@ -13,9 +13,9 @@ import (
 )
 
 func (h *Handler) HandlePrivateBookmarks(w http.ResponseWriter, r *http.Request) {
-	isAuthenticated := h.isAuthenticated(r)
+	isAuthenticated := h.isAuthenticated(w, r)
 	if !isAuthenticated {
-		http.Redirect(w, r, fmt.Sprintf("%s/login", h.appConf.BaseURL), http.StatusFound)
+		http.Redirect(w, r, fmt.Sprintf("%slogin", h.appConf.BaseURL), http.StatusFound)
 		return
 	}
 
@@ -33,26 +33,19 @@ func (h *Handler) HandlePrivateBookmarks(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	data := templateData{
-		SiteName:        h.appConf.SiteName,
-		Description:     h.appConf.Description,
-		Title:           "Private Bookmarks",
-		BaseURL:         h.appConf.BaseURL,
-		CurrentURL:      h.getCurrentURL(r, h.appConf),
-		IsAuthenticated: isAuthenticated,
-		PrivateOnly:     true,
-		Bookmarks:       bookmarkResult.Bookmarks,
-		Tags:            allTags,
-		Pages:           h.getPages(page, bookmarkResult.PageCount),
-	}
+	data := h.defaultTemplateData(w, r, isAuthenticated)
+	data.Title = "Private Bookmarks"
+	data.Bookmarks = bookmarkResult.Bookmarks
+	data.Tags = allTags
+	data.Pages = h.getPages(page, bookmarkResult.PageCount)
 
 	h.parseTemplateWithFunc("index.html", r, w, data)
 }
 
 func (h *Handler) HandleBrokenBookmarks(w http.ResponseWriter, r *http.Request) {
-	isAuthenticated := h.isAuthenticated(r)
+	isAuthenticated := h.isAuthenticated(w, r)
 	if !isAuthenticated {
-		http.Redirect(w, r, fmt.Sprintf("%s/login", h.appConf.BaseURL), http.StatusFound)
+		http.Redirect(w, r, fmt.Sprintf("%slogin", h.appConf.BaseURL), http.StatusFound)
 		return
 	}
 
@@ -68,41 +61,29 @@ func (h *Handler) HandleBrokenBookmarks(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	data := templateData{
-		SiteName:        h.appConf.SiteName,
-		Description:     h.appConf.Description,
-		Title:           "Broken Bookmarks",
-		BaseURL:         h.appConf.BaseURL,
-		CurrentURL:      h.getCurrentURL(r, h.appConf),
-		IsAuthenticated: isAuthenticated,
-		PrivateOnly:     true,
-		Bookmarks:       bookmarks,
-		Tags:            allTags,
-		BrokenBookmarks: bookmarks,
-	}
+	data := h.defaultTemplateData(w, r, isAuthenticated)
+	data.Title = "Broken Bookmarks"
+	data.Bookmarks = bookmarks
+	data.Tags = allTags
 
 	h.parseTemplateWithFunc("index.html", r, w, data)
 }
 
 func (h *Handler) HandleBookmarkAdd(w http.ResponseWriter, r *http.Request) {
-	isAuthenticated := h.isAuthenticated(r)
+	isAuthenticated := h.isAuthenticated(w, r)
 	if !isAuthenticated {
-		http.Redirect(w, r, fmt.Sprintf("%s/login", h.appConf.BaseURL), http.StatusFound)
+		http.Redirect(w, r, fmt.Sprintf("%slogin", h.appConf.BaseURL), http.StatusFound)
 		return
 	}
 
+	baseData := h.defaultTemplateData(w, r, isAuthenticated)
+	baseData.Title = "Add Bookmark"
+
 	data := adminTemplateData{
-		templateData: templateData{
-			SiteName:        h.appConf.SiteName,
-			Description:     h.appConf.Description,
-			Title:           "Add Bookmark",
-			BaseURL:         h.appConf.BaseURL,
-			CurrentURL:      h.getCurrentURL(r, h.appConf),
-			IsAuthenticated: isAuthenticated,
-		},
-		Errors:   make(map[string]string),
-		Bookmark: &bookmarks.Bookmark{},
-		Tags:     "",
+		TemplateData: baseData,
+		Errors:       make(map[string]string),
+		Bookmark:     &bookmarks.Bookmark{},
+		Tags:         "",
 	}
 
 	if r.Method == http.MethodPost {
@@ -128,7 +109,10 @@ func (h *Handler) HandleBookmarkAdd(w http.ResponseWriter, r *http.Request) {
 		data.Bookmark.IsWorking = true
 
 		data.Tags = r.Form.Get("tags")
-		data.Bookmark.Tags = strings.Split(data.Tags, " ")
+		data.Tags = strings.TrimSpace(data.Tags)
+		if len(data.Tags) > 0 {
+			data.Bookmark.Tags = strings.Split(data.Tags, " ")
+		}
 
 		if len(data.Errors) == 0 {
 			_, err := h.bookmarkRepo.Create(data.Bookmark)
@@ -145,9 +129,9 @@ func (h *Handler) HandleBookmarkAdd(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) HandleBookmarkEdit(w http.ResponseWriter, r *http.Request) {
-	isAuthenticated := h.isAuthenticated(r)
+	isAuthenticated := h.isAuthenticated(w, r)
 	if !isAuthenticated {
-		http.Redirect(w, r, fmt.Sprintf("%s/login", h.appConf.BaseURL), http.StatusFound)
+		http.Redirect(w, r, fmt.Sprintf("%slogin", h.appConf.BaseURL), http.StatusFound)
 		return
 	}
 
@@ -170,18 +154,14 @@ func (h *Handler) HandleBookmarkEdit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	baseData := h.defaultTemplateData(w, r, isAuthenticated)
+	baseData.Title = "Edit Bookmark"
+
 	data := adminTemplateData{
-		templateData: templateData{
-			SiteName:        h.appConf.SiteName,
-			Description:     h.appConf.Description,
-			Title:           "Edit Bookmark",
-			BaseURL:         h.appConf.BaseURL,
-			CurrentURL:      h.getCurrentURL(r, h.appConf),
-			IsAuthenticated: isAuthenticated,
-		},
-		Errors:   make(map[string]string),
-		Bookmark: bookmark,
-		Tags:     strings.Join(bookmark.Tags, " "),
+		TemplateData: baseData,
+		Errors:       make(map[string]string),
+		Bookmark:     bookmark,
+		Tags:         strings.Join(bookmark.Tags, " "),
 	}
 
 	if r.Method == http.MethodPost {
@@ -207,7 +187,12 @@ func (h *Handler) HandleBookmarkEdit(w http.ResponseWriter, r *http.Request) {
 		data.Bookmark.Created = time.Now().UTC()
 
 		data.Tags = r.Form.Get("tags")
-		data.Bookmark.Tags = strings.Split(data.Tags, " ")
+		data.Tags = strings.TrimSpace(data.Tags)
+		if len(data.Tags) > 0 {
+			data.Bookmark.Tags = strings.Split(data.Tags, " ")
+		} else {
+			data.Bookmark.Tags = make([]string, 0)
+		}
 
 		if len(data.Errors) == 0 {
 			_, err := h.bookmarkRepo.Update(data.Bookmark)
@@ -224,9 +209,9 @@ func (h *Handler) HandleBookmarkEdit(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) HandleBookmarkDelete(w http.ResponseWriter, r *http.Request) {
-	isAuthenticated := h.isAuthenticated(r)
+	isAuthenticated := h.isAuthenticated(w, r)
 	if !isAuthenticated {
-		http.Redirect(w, r, fmt.Sprintf("%s/login", h.appConf.BaseURL), http.StatusFound)
+		http.Redirect(w, r, fmt.Sprintf("%slogin", h.appConf.BaseURL), http.StatusFound)
 		return
 	}
 
@@ -250,16 +235,12 @@ func (h *Handler) HandleBookmarkDelete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	baseData := h.defaultTemplateData(w, r, isAuthenticated)
+	baseData.Title = "Delete Bookmark"
+
 	data := adminTemplateData{
-		templateData: templateData{
-			SiteName:        h.appConf.SiteName,
-			Description:     h.appConf.Description,
-			Title:           "Delete Bookmark",
-			BaseURL:         h.appConf.BaseURL,
-			CurrentURL:      h.getCurrentURL(r, h.appConf),
-			IsAuthenticated: isAuthenticated,
-		},
-		Bookmark: bookmark,
+		TemplateData: baseData,
+		Bookmark:     bookmark,
 	}
 
 	if r.Method == http.MethodPost {

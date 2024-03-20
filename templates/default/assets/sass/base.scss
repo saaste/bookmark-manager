@@ -1,0 +1,194 @@
+$page-max-width: 1600px;
+$mobile-max-width: 650px;
+
+$dark-text: #F8F8F2;
+$dark-background: #282a36;
+$dark-primary: #414458;
+$dark-secondary: #303240;
+$dark-accent: #FFB86C;
+$dark-menu: #121d29;
+$dark-menu-toggler: hsl(231, 15%, 48%);
+$dark-input-background: #414458;
+$dark-input-border: #4f657d;
+$dark-input-disabled-background: #4f5058;
+$dark-input-disabled-border: #5a5e63;
+$dark-input-disabled-text: #808080;
+$dark-button-background: #544158;
+$dark-button-border: #7d4f7b;
+$dark-button-hover: #725977;
+$dark-bookmark-background: #303240;
+$dark-bookmark-action-background: #415358;
+$dark-warning: #ff8282;
+
+$light-text: #0d0d07;
+$light-background: #caccd8;
+$light-primary: #a7aabe;
+$light-secondary: #bfc1cf;
+$light-accent: #753d00;
+$light-menu: #cbd4df;
+$light-menu-toggler: hsl(231, 15%, 52%);
+$light-input-background: #a7aabe;
+$light-input-border: #93a3b8;
+$light-input-disabled-background: #bebebe;
+$light-input-disabled-border: #b6b7b8;
+$light-input-disabled-text: #9b9b9b;
+$light-button-background: #b9a7be;
+$light-button-border: #bd9cc4;
+$light-button-hover: #b1a1b6;
+$light-bookmark-background: #bfc1cf;
+$light-bookmark-action-background: #a7b4be;
+$light-warning: #b30000;
+
+$text-h1: 2.986rem;
+$text-h2: 2.488rem;
+$text-h3: 2.075rem;
+$text-h4: 1.728rem;
+$text-h5: 1.44rem;
+$text-h6: 1.2rem;
+
+$shadow: rgba(0, 0, 0, 0.397);
+
+
+:root {
+    --color-text: #{$dark-text};
+    --color-background: #{$dark-background};
+    --color-primary: #{$dark-primary};
+    --color-secondary: #{$dark-secondary};
+    --color-accent: #{$dark-accent};
+    --color-menu: #{$dark-menu};
+    --color-menu-toggler: #{$dark-menu-toggler};
+    --color-shadow: #{$shadow};
+    --color-input-background: #{$dark-input-background};
+    --color-input-border: #{$dark-input-border};
+    --color-input-disabled-background: #{$dark-input-disabled-background};
+    --color-input-disabled-border: #{$dark-input-disabled-border};
+    --color-input-disabled-text: #{$dark-input-disabled-text};
+    --color-button-background: #{$dark-button-background};
+    --color-button-border: #{$dark-button-border};
+    --color-button-hover: #{$dark-button-hover};
+    --color-bookmark-background: #{$dark-bookmark-background};
+    --color-bookmark-action-background: #{$dark-bookmark-action-background};
+    --color-warning: #{$dark-warning};
+}
+
+@media (prefers-color-scheme: light) {
+    :root {
+        --color-text: #{$light-text};
+        --color-background: #{$light-background};
+        --color-primary: #{$light-primary};
+        --color-secondary: #{$light-secondary};
+        --color-accent: #{$light-accent};
+        --color-menu: #{$light-menu};
+        --color-menu-toggler: #{$light-menu-toggler};
+        --color-shadow: #{$shadow};
+        --color-input-background: #{$light-input-background};
+        --color-input-border: #{$light-input-border};
+        --color-input-disabled-background: #{$light-input-disabled-background};
+        --color-input-disabled-border: #{$light-input-disabled-border};
+        --color-input-disabled-text: #{$light-input-disabled-text};
+        --color-button-background: #{$light-button-background};
+        --color-button-border: #{$light-button-border};
+        --color-button-hover: #{$light-button-hover};
+        --color-bookmark-background: #{$light-bookmark-background};
+        --color-bookmark-action-background: #{$light-bookmark-action-background};
+        --color-warning: #{$light-warning};
+    }
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    -moz-text-size-adjust: none;
+    -webkit-text-size-adjust: none;
+    text-size-adjust: none;
+}
+
+body,
+h1,
+h2,
+h3,
+h4 {
+    margin-block-end: 0;
+}
+
+body {
+    min-height: 100vh;
+    line-height: 1.5;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    background-color: var(--color-background);
+    color: var(--color-text);
+}
+
+h1,
+h2,
+h3,
+h4 {
+    text-wrap: balance;
+}
+
+h1 {
+    font-size: $text-h1;
+}
+
+h2 {
+    font-size: $text-h5;
+    padding-bottom: 0.5em;
+}
+
+a {
+    color: var(--color-accent);
+
+    &:hover, &:focus {
+        text-shadow: 0 0 5px var(--color-accent);
+    }
+}
+
+input,
+button,
+textarea,
+select {
+    font: inherit;
+    background: var(--color-input-background);
+    border: 2px solid var(--color-input-border);
+    border-radius: 5px;
+    color: var(--color-text);
+    padding: 0.5rem;
+
+    &[disabled] {
+        background: var(--color-input-disabled-background);
+        border: 2px solid var(--color-input-disabled-border);
+        color: var(--color-input-disabled-text);
+    }
+
+    &.invalid {
+        border-color: var(--color-warning);
+    }
+}
+
+textarea:not([rows]) {
+    min-height: 10em;
+}
+
+button {
+    background: var(--color-button-background);
+    border: 2px solid var(--color-button-border);
+
+    &:not([disabled]) {
+        &:hover, &:focus {
+            background: var(--color-button-hover);
+        }
+    }
+
+    &.warning {
+        color: var(--color-text);
+    }
+
+}
+
+:target {
+    scroll-margin-block: 5ex;
+}

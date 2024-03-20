@@ -12,12 +12,16 @@ for each tag. The app can also do [scheduled bookmark checks](#scheduled-bookmar
 Bookmark Manager aims to be as accessible as possible. It should have a pretty a quite good
 screen reader support, but if have an idea how to make it even better, feel free to file an issue!
 
+**The app is still under heavy development. Breaking changes are quite likely.**
+
 ## How to run
 1. Copy the following example files:
    - bookmarks.db.example ➔ bookmarks.db
    - docker-compose.yml.example ➔ docker-compose.yml
    - config.yml.example ➔ config.yml
+   - robots.txt.example ➔ robots.txt
 2. Configure settings in `config.yml`. Each setting is described in the config file.
+3. Configure `robots.txt` if you want to limit how search engines and bots scrape your site
 
 ### Running with Docker (recommended)
 ```
@@ -43,14 +47,21 @@ Bookmark Manager can send a notification when it detects broken bookmarks. Curre
 the `gotify_enabled` setting to `true` and set `gotify_url` and `gotify_token` settings to match your
 environment.
 
+## Customizing the UI
+Bookmark Manager supports themes. If you want to create your own theme, read the separate [Theme Documentation](/docs/THEMES.md).
+
 ## Screenshots
 UI for guests
 
-![Screenshot showing UI for guest users](docs/screenshot-guest.png "UI for guests")
+[![Screenshot showing the dark UI for guest users](docs/sshot-dark-guest-tn.jpg "Dark UI for guests")](docs/sshot-dark-guest.jpg)
+[![Screenshot showing the light UI for guest users](docs/sshot-light-guest-tn.jpg "Light UI for guests")](docs/sshot-light-guest.jpg)
 
 UI for authenticated users
 
-![Screenshot showing UI for authenticated users](docs/screenshot-authenticated.png "UI for authenticated users")
+[![Screenshot showing the dark UI for authenticated users](docs/sshot-dark-auth-tn.jpg "Dark UI for authenticated users")](docs/sshot-dark-auth.jpg)
+[![Screenshot showing the light UI for authenticated users](docs/sshot-light-auth-tn.jpg "Light UI for authenticated users")](docs/sshot-light-auth.jpg)
 
-## Plans for the future
-- Themes
+Admin UI
+
+[![Screenshot showing the dark admin UI](docs/sshot-dark-admin-tn.jpg "Dark Admin UI")](docs/sshot-dark-admin.jpg)
+[![Screenshot showing the light admin UI](docs/sshot-light-admin-tn.jpg "Light Admin UI")](docs/sshot-light-admin.jpg)

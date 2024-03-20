@@ -25,6 +25,7 @@ type Repository interface {
 	GetTags(showPrivate bool) ([]string, error)
 	GetAllWithoutPagination() ([]*Bookmark, error)
 	GetBrokenBookmarks() ([]*Bookmark, error)
+	BrokenBookmarksExist() (bool, error)
 }
 
 type SqliteRepository struct {
@@ -411,6 +412,18 @@ func (r *SqliteRepository) GetBrokenBookmarks() ([]*Bookmark, error) {
 	}
 
 	return bookmarks, nil
+}
+
+func (r *SqliteRepository) BrokenBookmarksExist() (bool, error) {
+	var count int64
+	row := r.db.QueryRow("SELECT COUNT(*) FROM bookmarks WHERE is_working = false")
+	err := row.Scan(&count)
+	if err != nil {
+		return false, fmt.Errorf("scanning query row failed: %w", err)
+	}
+
+	return count > 0, nil
+
 }
 
 func (r *SqliteRepository) getTagsByBookmarkIDs(bookmarkIDs []int64) (map[int64][]string, error) {

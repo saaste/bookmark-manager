@@ -1,54 +1,67 @@
 {{ define "title" }}Index{{ end }}
 {{ define "content" }}
 
+<nav class="mobile-only mobile-helper"><a href='{{ anchorUrl "tags" }}' id="top">Go to Tags</a></nav>
 
-<section id="bookmarks">
-    <nav class="mobile-only mobile-helper"><a href="{{ anchorUrl "q" }}" id="top">Go to Search and Tags</a></nav>
-    <div class="header">
-        <h2>{{ .Title }}</h2>
+<section class="search-container">
+    <h2 class="search-title">Search</h2>
+    <form method="get" action="{{ .BaseURL }}">
+        <input type="text" name="q" id="q" aria-label="Search by keyword" class="search-input">
+        {{ if .TagFilter }}
+        <input type="hidden" name="tags" value="{{ .TagFilter }}">
+        {{ end }}
+    </form>
+</section>
+
+<section class="bookmarks-container">
+    <div class="bookmarks-header">
+        <h2 class="bookmarks-title">{{ .Title }}</h2>
         {{ if .Bookmarks }}
-        <a href="{{ feedUrl }}"><img src="{{ .BaseURL }}/assets/feed.png" class="feed-icon" alt="RSS feed icon" title="Bookmarks feed"></a>
+        <a href='{{ feedUrl "rss" }}'><img src="{{ .BaseURL }}assets/feed.png" class="icon" alt="RSS feed icon" title="RSS feed"></a>
         {{ end }}
     </div>
+    
     {{ if .Bookmarks }}
-    <ul>
+    <ul class="bookmarks">
         {{ range .Bookmarks }} 
         <li class="bookmark">
-            <div class="flex horizonal">
-                <h3 class="title"><a href="{{ .URL }}" target="_blank" rel="noopener noreferrer">{{ .Title }}</a></h3>
+            <div class="bookmark-heading">
+                <h3 class="bookmark-title"><a href="{{ .URL }}" target="_blank" rel="noopener noreferrer">{{ .Title }}</a></h3>
                 {{ if $.IsAuthenticated }}
-                <div class="warnings">
-                    {{ if eq .IsWorking false }}<img src="{{ $.BaseURL }}/assets/warning.png" class="warning-icon" alt="Exclamation point icon" title="Bookmark is broken">{{ end }}
-                    {{ if eq .IsPrivate true }}<img src="{{ $.BaseURL }}/assets/lock.png" class="private-icon" alt="Lock icon" title="Bookmark is private">{{ end }}
+                <div>
+                    {{ if eq .IsWorking false }}<img src="{{ $.BaseURL }}assets/warning.png" class="icon" alt="Exclamation point icon" title="Bookmark is broken">{{ end }}
+                    {{ if eq .IsPrivate true }}<img src="{{ $.BaseURL }}assets/lock.png" class="icon" alt="Lock icon" title="Bookmark is private">{{ end }}
                 </div>
                 {{ end }}
             </div>
             
             {{ if .Description }}
-                <p class="description">{{ .Description }}</p>
+                <p>{{ .Description }}</p>
             {{ end }}
             
-            <div class="extras">
-                <div class="tags">
-                    {{ if .Tags }}
-                        Tags: 
-                        {{ range .Tags }}
-                            <a class="tag" href="{{ $.BaseURL}}/tags/{{ . }}">{{ . }}</a>
-                        {{ end }}
-                    {{ end}}
-                </div>
-                <div class="actions">
-                    {{ if $.IsAuthenticated }}
-                    <a href="{{ $.BaseURL }}/admin/bookmarks/{{ .ID }}">Edit</a>
-                    <a href="{{ $.BaseURL }}/admin/bookmarks/{{ .ID }}/delete">Delete</a>
+            <div class="bookmark-extras">
+                {{ if gt (len .Tags) 0  }}
+                <div class="bookmark-tags">
+                    Tags:
+                    {{ range .Tags }}
+                        <a href="{{ $.BaseURL}}tags/{{ . }}" class="bookmark-tag">{{ . }}</a>
                     {{ end }}
                 </div>
+                {{ end}}
+                {{ if $.IsAuthenticated }}
+                <div class="bookmark-actions">
+                    <a href="{{ $.BaseURL }}admin/bookmarks/{{ .ID }}" class="bookmark-action">Edit</a>
+                    <a href="{{ $.BaseURL }}admin/bookmarks/{{ .ID }}/delete" class="bookmark-action">Delete</a>
+                </div>
+                {{ end }}
             </div>
         </li>
         {{ end }}
     </ul>
+
     {{ if gt (len .Pages) 1 }}
-    <nav id="pagination" aria-label="Pagination Navigation">
+    <nav class="bookmarks-pagination" aria-label="Pagination Navigation">
+        Page: 
         {{ range .Pages }}
             {{ if .IsActive }}
                 {{ .Number }}
@@ -60,35 +73,22 @@
     {{ end }}
     {{ else }}
     <div class="bookmark">
-        <p>No matching bookmarks</p>
+        <p>No bookmarks</p>
     </div>
     {{ end }}
 </section>
 
+<nav class="mobile-only mobile-helper"><a href="{{ anchorUrl "top" }}">Go to top</a></nav>
 
-<aside id="sidebar">
-    <nav class="mobile-only mobile-helper"><a href="{{ anchorUrl "top" }}">Go to top</a></nav>
-    <section id="search">
-        <h2>Search</h2>
-        <form method="get" action="{{ .BaseURL }}">
-            <input type="text" name="q" id="q" aria-label="Search by keyword">
-            {{ if .TagFilter }}
-            <input type="hidden" name="tags" value="{{ .TagFilter }}">
-            {{ end }}
-        </form>
-    </section>
-
-    {{ if .Tags }}
-    <section id="tags">
-        <h2>Tags</h2>
-        <ul>
-            {{ range .Tags }}
-            <li><a href="{{ $.BaseURL}}/tags/{{ . }}">{{ . }}</a></li>    
-            {{ end }}
-        </ul>
-    </section>
-    {{ end }}
-</aside>
-
+{{ if .Tags }}
+<section class="tags-container">
+    <h2 class="tags-title">Tags</h2>
+    <ul class="tags-list">
+        {{ range .Tags }}
+        <li><a href="{{ $.BaseURL}}tags/{{ . }}" class="tag">{{ . }}</a></li>    
+        {{ end }}
+    </ul>
+</section>
+{{ end }}
 
 {{ end }}

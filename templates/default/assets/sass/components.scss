@@ -1,0 +1,254 @@
+@import "layout.scss";
+
+// --------------
+// Header
+// --------------
+.page-header {
+    font-size: $text-h1;
+    flex: auto;
+
+    a {
+        color: var(--color-text);
+        text-decoration: none;
+    }
+}
+
+.navigation-toggler {
+    font-size: $text-h1;
+    color: var(--color-menu-toggler);
+    text-decoration: none;
+}
+
+.header-navigation {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0.7rem;
+
+    li + li::before {
+        content: "| ";
+    }
+}
+
+// --------------
+// Search
+// --------------
+.search-container {
+    grid-area: search;
+    padding-bottom: 2rem;
+    width: 100%;
+}
+
+.search-input {
+    width: 100%;
+}
+
+// --------------
+// Bookmarks
+// --------------
+.bookmarks-container {
+    grid-area: main;
+    display: flex;
+    flex-direction: column;
+}
+
+.bookmarks-header {
+    display: flex;
+}
+
+.bookmarks-title {
+    flex: auto;
+}
+
+.bookmarks {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.bookmark {
+    background-color: var(--color-bookmark-background);
+    padding: 1rem;
+    border-radius: 10px;
+}
+
+.bookmark-heading {
+    display: flex;
+    align-items: center;
+    padding-bottom: 1rem;
+}
+
+.bookmark-title {
+    flex: auto;
+    font-size: $text-h6;
+}
+
+.bookmark-extras {
+    display: flex;
+    padding-top: 1rem;
+    font-size: 0.8rem;
+}
+
+.bookmark-tags {
+    flex: auto;
+}
+
+.bookmark-tag, .bookmark-action {
+    color: var(--color-text);
+    padding: 0.3rem 0.7rem;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.bookmark-tag {
+    background-color: var(--color-primary);   
+}
+
+.bookmark-action {
+    background-color: var(--color-bookmark-action-background);
+}
+
+.bookmarks-pagination {
+    padding-top: 1rem;
+}
+
+// --------------
+// Tags
+// --------------
+.tags-container {
+    grid-area: tags;
+}
+
+
+// --------------
+// Helpers
+// --------------
+.icon {
+    width: 1.2rem;
+    height: 1.2rem;
+    vertical-align: middle;
+}
+
+.warning {
+    color: var(--color-warning);
+}
+
+.mobile-only {
+    display: none;
+}
+
+.hidden {
+    display: none;
+}
+
+// --------------
+// Admin
+// --------------
+.input-group {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 1rem;
+}
+.input-group.horizontal, .input-group.checkbox {
+    flex-direction: row;
+    gap: 1rem;
+}
+
+.input-group.checkbox {
+    gap: 0.5rem;
+    align-items: baseline;
+}
+
+.url {
+    flex: auto;
+}
+
+.autocomplete {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--color-input-background);
+
+    &.hidden {
+        display: none;
+    }
+}
+
+.tag-option {
+    padding: 0.5rem;
+
+    &:focus, &:hover {
+        background-color: var(--color-secondary);
+    }
+}
+
+.info-box {
+    background-color: var(--color-primary);
+    padding: 1rem;
+}
+
+.info-box-title {
+    font-size: $text-h5;
+    padding-bottom: 1rem;
+}
+
+@media only screen and (max-width: $mobile-max-width) {
+    .page-header {
+        font-size: $text-h4;
+    }
+    
+    .header-navigation {
+        position: absolute;
+        top: 4.5rem;
+        right: 1rem;
+        flex-direction: column;
+        background-color: var(--color-menu);
+        padding: 1rem;
+        font-size: $text-h5;
+        border-radius: 5px;
+        box-shadow: -5px 5px 15px var(--color-shadow);
+
+        a {
+            color: var(--color-text);
+            text-decoration: none;
+        }
+
+        li + li::before {
+            content: none;
+        }
+    }
+
+    .search-title, .bookmarks-title, .tags-title {
+        text-align: center;
+        padding-top: 1rem;
+    }
+
+    .tags-list {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .tag {
+        color: var(--color-text);
+        padding: 0.3rem 0.7rem;
+        border-radius: 5px;
+        text-decoration: none;
+        background-color: var(--color-primary);   
+    }
+    
+    .footer-container {
+        padding-top: 4rem;
+    }
+
+    .admin-form {
+        width: 100%;
+    }
+
+    .mobile-only {
+        display: block;
+    }
+
+    .desktop-only {
+        display: none;
+    }
+}
