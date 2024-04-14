@@ -46,9 +46,16 @@ func LoadConfig() (*AppConfig, error) {
 
 	appConfig.AppVersion = appVersion
 
-	// Validate base URL
+	if appConfig.GotifyEnabled && (appConfig.GotifyToken == "" || appConfig.GotifyURL == "") {
+		return nil, fmt.Errorf("gotify notifications are enabled but token or gotify URL is empty")
+	}
+
+	// Validate trailing slash of URLS
 	if !strings.HasSuffix(appConfig.BaseURL, "/") {
-		return nil, fmt.Errorf("base URL must have a trailing slash")
+		appConfig.BaseURL = fmt.Sprintf("%s/", appConfig.BaseURL)
+	}
+	if appConfig.GotifyURL != "" && !strings.HasSuffix(appConfig.GotifyURL, "/") {
+		appConfig.GotifyURL = fmt.Sprintf("%s/", appConfig.GotifyURL)
 	}
 
 	return appConfig, nil
