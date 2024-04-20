@@ -42,6 +42,12 @@ template: default
 # Run bookmarks check when app starts
 #check_on_app_start: false
 
+# User-Agent header the checker is sending with the request
+# Some sites might block the request if the User-Agent is not one of the
+# typical browsers. If this is not set, the following user agent is sent:
+# Mozilla/5.0 +https://github.com/saaste/bookmark-manager BookmarkManager/1.0.0
+#checker_user_agent: your-custom-user-agent-string
+
 # -------------
 # Notifications
 # --------------

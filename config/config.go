@@ -30,6 +30,7 @@ type AppConfig struct {
 	AppVersion        string
 	AuthorName        string `yaml:"author_name,omitempty"`
 	AuthorEmail       string `yaml:"author_email,omitempty"`
+	CheckerUserAgent  string `yaml:"checker_user_agent,omitempty"`
 }
 
 func LoadConfig() (*AppConfig, error) {
