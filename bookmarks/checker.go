@@ -34,7 +34,7 @@ func NewBookmarkChecker(appConfig *config.AppConfig, repo Repository, client Htt
 
 func (bc *BookmarkChecker) CheckBookbarks() ([]BookmarkError, error) {
 	errors := make([]BookmarkError, 0)
-	bms, err := bc.repo.GetAllWithoutPagination()
+	bms, err := bc.repo.GetCheckable()
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch bookmarks for checking: %v", err)
 	}

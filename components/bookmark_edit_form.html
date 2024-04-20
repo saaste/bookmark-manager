@@ -31,6 +31,11 @@
         <label for="is_working">Is Working</label>
     </div>
 
+    <div class="input-group horizontal">
+        <input type="checkbox" name="ignore_check" id="ignore_check" value="1" {{ if .Bookmark.IgnoreCheck }}checked{{end}} /><br />
+        <label for="ignore_check">Ignore URL checking</label>
+    </div>
+
     <div class="input-group">
         <label for="tags">Tags (separated with spaces)</label>
         <input type="text" name="tags" id="tags"  value="{{ .Tags }}" autocomplete="off" /><br />
