@@ -25,6 +25,8 @@ func TestCreate(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, expected, actual)
 	assert.True(t, actual.ID >= 1)
+	assert.True(t, expected.IsWorking)
+	assert.False(t, expected.IgnoreCheck)
 
 	bookmarks := getBookmarks(t, db, repo)
 	assert.Len(t, bookmarks, 1)
@@ -49,6 +51,7 @@ func TestUpdate(t *testing.T) {
 	bookmark.Title = "Updated title"
 	bookmark.Description = "Updated description"
 	bookmark.IsPrivate = false
+	bookmark.IgnoreCheck = true
 	bookmark.Tags = []string{"updated1", "updated2"}
 
 	actual, err := repo.Update(bookmark)
@@ -62,6 +65,8 @@ func TestUpdate(t *testing.T) {
 	tags := getTags(t, db)
 	assert.Len(t, tags, 2)
 	assert.Equal(t, bookmark.Tags, tags)
+
+	assert.True(t, bookmarks[0].IsWorking)
 }
 
 func TestGet(t *testing.T) {
@@ -302,7 +307,7 @@ func TestGetTags(t *testing.T) {
 
 }
 
-func TestGetAllWithoutPagination(t *testing.T) {
+func TestGetCheckable(t *testing.T) {
 	db := test_utils.InitTestDatabase(t, dbFileName)
 	defer test_utils.DestroyTestDatabase(t, db, dbFileName)
 
@@ -324,7 +329,12 @@ func TestGetAllWithoutPagination(t *testing.T) {
 	_, err = repo.Create(bookmark4)
 	assert.Nil(t, err)
 
-	result, err := repo.GetAllWithoutPagination()
+	bookmark5 := createBookmark(true)
+	bookmark5.IgnoreCheck = true
+	_, err = repo.Create(bookmark5)
+	assert.Nil(t, err)
+
+	result, err := repo.GetCheckable()
 	assert.Nil(t, err)
 	assert.Len(t, result, 4)
 	assert.Equal(t, bookmark4.ID, result[0].ID)
@@ -402,6 +412,7 @@ func createBookmark(isPrivate bool) *Bookmark {
 		Created:     removeNanoseconds(time.Now()),
 		Tags:        []string{"tag1", "tag2"},
 		IsWorking:   true,
+		IgnoreCheck: false,
 	}
 }
 

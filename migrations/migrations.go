@@ -30,6 +30,15 @@ func RunMigrations(db *sql.DB) error {
 		return err
 	}
 
+	latestMigration := getLatestMigration(tx)
+
+	if latestMigration < 3 {
+		err = migration3(tx)
+		if err != nil {
+			return err
+		}
+	}
+
 	return tx.Commit()
 }
 
@@ -93,4 +102,35 @@ func migration2(tx *sql.Tx) error {
 	}
 
 	return nil
+}
+
+func migration3(tx *sql.Tx) error {
+	statements := make([]string, 0)
+
+	statements = append(statements, `
+	ALTER TABLE bookmarks
+		ADD COLUMN ignore_check BOOLEAN NOT NULL DEFAULT false`)
+
+	statements = append(statements, fmt.Sprintf(`
+	INSERT INTO migrations (version, created) VALUES (%d, "%s")`, 3, time.Now().UTC().Format(time.RFC3339)))
+
+	for _, statement := range statements {
+		_, err := tx.Exec(statement)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func getLatestMigration(tx *sql.Tx) int64 {
+	var version int64
+	row := tx.QueryRow("SELECT version FROM migrations ORDER BY version DESC LIMIT 1")
+	err := row.Scan(&version)
+	if err != nil {
+		return 0
+
+	}
+	return version
 }

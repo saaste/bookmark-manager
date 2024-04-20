@@ -34,7 +34,7 @@ func NewBookmarkChecker(appConfig *config.AppConfig, repo Repository, client Htt
 
 func (bc *BookmarkChecker) CheckBookbarks() ([]BookmarkError, error) {
 	errors := make([]BookmarkError, 0)
-	bms, err := bc.repo.GetAllWithoutPagination()
+	bms, err := bc.repo.GetCheckable()
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch bookmarks for checking: %v", err)
 	}
@@ -56,6 +56,7 @@ func (bc *BookmarkChecker) CheckBookbarks() ([]BookmarkError, error) {
 				Message: err.Error(),
 			})
 			working = false
+			fmt.Printf("Bookmark #%d failed: %v\n", bookmark.ID, err)
 		} else if resp.StatusCode >= 300 {
 			errors = append(errors, BookmarkError{
 				Title:   bookmark.Title,
@@ -63,6 +64,7 @@ func (bc *BookmarkChecker) CheckBookbarks() ([]BookmarkError, error) {
 				Message: fmt.Sprintf("Returned %s", resp.Status),
 			})
 			working = false
+			fmt.Printf("Bookmark #%d failed with status: %s\n", bookmark.ID, resp.Status)
 		}
 
 		bookmark.IsWorking = working
@@ -76,5 +78,8 @@ func (bc *BookmarkChecker) CheckBookbarks() ([]BookmarkError, error) {
 }
 
 func (bc *BookmarkChecker) userAgentString() string {
+	if bc.appConfig.CheckerUserAgent != "" {
+		return bc.appConfig.CheckerUserAgent
+	}
 	return fmt.Sprintf("Mozilla/5.0 +https://github.com/saaste/bookmark-manager BookmarkManager/%s", bc.appConfig.AppVersion)
 }
