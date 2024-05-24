@@ -52,7 +52,7 @@ func (n *Notifier) SendGotifyMessage(title string, message string) error {
 		return fmt.Errorf("marshaling request body failed: %w", err)
 	}
 
-	gotifyUrl := fmt.Sprintf("%s/message", n.appConfig.GotifyURL)
+	gotifyUrl := fmt.Sprintf("%smessage", n.appConfig.GotifyURL)
 	req, err := http.NewRequest(http.MethodPost, gotifyUrl, bytes.NewBuffer(data))
 	if err != nil {
 		return fmt.Errorf("creating a request failed: %w", err)

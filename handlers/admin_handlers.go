@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -107,6 +108,7 @@ func (h *Handler) HandleBookmarkAdd(w http.ResponseWriter, r *http.Request) {
 		data.Bookmark.IsPrivate = r.Form.Get("is_private") == "1"
 		data.Bookmark.Created = time.Now().UTC()
 		data.Bookmark.IsWorking = true
+		data.Bookmark.IgnoreCheck = false
 
 		data.Tags = r.Form.Get("tags")
 		data.Tags = strings.TrimSpace(data.Tags)
@@ -150,7 +152,11 @@ func (h *Handler) HandleBookmarkEdit(w http.ResponseWriter, r *http.Request) {
 
 	bookmark, err := h.bookmarkRepo.Get(bookmarkID)
 	if err != nil {
-		http.NotFound(w, r)
+		if errors.Is(err, bookmarks.ErrNotFound) {
+			http.NotFound(w, r)
+		} else {
+			h.internalServerError(w, "failed to fetch a bookmark", err)
+		}
 		return
 	}
 
@@ -184,6 +190,7 @@ func (h *Handler) HandleBookmarkEdit(w http.ResponseWriter, r *http.Request) {
 		data.Bookmark.Description = r.Form.Get("description")
 		data.Bookmark.IsPrivate = r.Form.Get("is_private") == "1"
 		data.Bookmark.IsWorking = r.Form.Get("is_working") == "1"
+		data.Bookmark.IgnoreCheck = r.Form.Get("ignore_check") == "1"
 		data.Bookmark.Created = time.Now().UTC()
 
 		data.Tags = r.Form.Get("tags")

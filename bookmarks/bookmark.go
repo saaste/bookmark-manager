@@ -13,6 +13,7 @@ type Bookmark struct {
 	Created     time.Time
 	Tags        []string
 	IsWorking   bool
+	IgnoreCheck bool
 }
 
 type BookmarkResult struct {
