@@ -1,6 +1,7 @@
 package bookmarks
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -13,6 +14,11 @@ type BookmarkError struct {
 	Title   string
 	URL     string
 	Message string
+}
+
+type URLCheckResult struct {
+	StatusCode int
+	Error      error
 }
 
 type HttpClient interface {
@@ -43,56 +49,29 @@ func (bc *BookmarkChecker) CheckBookbarks() ([]BookmarkError, error) {
 	log.Printf("Checking %d bookmarks...\n", len(bms))
 	for _, bookmark := range bms {
 
-		req, err := http.NewRequest(http.MethodHead, bookmark.URL, nil)
-		if err != nil {
-			return nil, fmt.Errorf("failed to create a request: %v", err)
-		}
-
-		url, err := url.Parse(bookmark.URL)
-		if err != nil {
-			return nil, fmt.Errorf("failed to parse URL: %v", err)
-		}
-
-		req.Header.Set("User-Agent", bc.userAgentString())
-		req.Header.Set("Priority", "u=0, i")
-		req.Header.Set("Accept", "*/*")
-		req.Header.Set("Accept-Encoding", "gzip, deflate, br, zstd")
-		req.Header.Set("Cache-Control", "no-cache")
-		req.Header.Set("Host", url.Host)
-
-		resp, err := bc.client.Do(req)
-		working := true
-		errorMessage := ""
-
-		if err != nil {
-			errors = append(errors, BookmarkError{
-				Title:   bookmark.Title,
-				URL:     bookmark.URL,
-				Message: err.Error(),
-			})
-			working = false
-			fmt.Printf("Bookmark #%d failed: %v\n", bookmark.ID, err)
-			errorMessage = err.Error()
-		} else if resp.StatusCode >= 300 {
-			errors = append(errors, BookmarkError{
-				Title:   bookmark.Title,
-				URL:     bookmark.URL,
-				Message: fmt.Sprintf("Returned %s", resp.Status),
-			})
-			working = false
-
-			if resp.Header.Get("Cf-Mitigated") == "challenge" {
-				errorMessage = "Check blocked by Cloudflare challenge"
-			} else {
-				errorMessage = resp.Status
+		// Try first with HEAD request
+		checkResult := bc.checkWithHead(bookmark.URL)
+		if checkResult.Error != nil {
+			// If that fails, try with GET request
+			checkResult = bc.checkWithGet(bookmark.URL)
+			if checkResult.Error != nil {
+				fmt.Printf("Bookmark #%d failed with status %d: %v\n", bookmark.ID, checkResult.StatusCode, checkResult.Error)
+				errors = append(errors, BookmarkError{
+					Title:   bookmark.Title,
+					URL:     bookmark.URL,
+					Message: fmt.Sprintf("Status: %d: %s", checkResult.StatusCode, checkResult.Error.Error()),
+				})
 			}
-
-			fmt.Printf("Bookmark #%d failed with status: %s\n", bookmark.ID, resp.Status)
 		}
 
-		bookmark.IsWorking = working
-		bookmark.LastStatusCode = resp.StatusCode
-		bookmark.ErrorMessage = errorMessage
+		bookmark.IsWorking = checkResult.Error == nil
+		bookmark.LastStatusCode = checkResult.StatusCode
+		if checkResult.Error != nil {
+			bookmark.ErrorMessage = checkResult.Error.Error()
+		} else {
+			bookmark.ErrorMessage = ""
+		}
+
 		_, err = bc.repo.Update(bookmark)
 		if err != nil {
 			return errors, err
@@ -100,6 +79,55 @@ func (bc *BookmarkChecker) CheckBookbarks() ([]BookmarkError, error) {
 	}
 	log.Printf("Bookmarks check done! Found %d errors\n", len(errors))
 	return errors, nil
+}
+
+func (bc *BookmarkChecker) checkWithHead(siteUrl string) *URLCheckResult {
+	return bc.checkURL(siteUrl, http.MethodHead)
+}
+
+func (bc *BookmarkChecker) checkWithGet(siteURL string) *URLCheckResult {
+	return bc.checkURL(siteURL, http.MethodGet)
+}
+
+func (bc *BookmarkChecker) checkURL(siteUrl string, method string) *URLCheckResult {
+	req, err := http.NewRequest(method, siteUrl, nil)
+	if err != nil {
+		return &URLCheckResult{Error: fmt.Errorf("failed to create a request: %v", err)}
+	}
+
+	parsedURL, err := url.Parse(siteUrl)
+	if err != nil {
+		return &URLCheckResult{Error: fmt.Errorf("failed to parse URL: %v", err)}
+	}
+
+	req.Header.Set("User-Agent", bc.userAgentString())
+	req.Header.Set("Priority", "u=0, i")
+	req.Header.Set("Accept", "*/*")
+	req.Header.Set("Accept-Encoding", "gzip, deflate, br, zstd")
+	req.Header.Set("Cache-Control", "no-cache")
+	req.Header.Set("Host", parsedURL.Host)
+
+	resp, err := bc.client.Do(req)
+	if err != nil {
+		return &URLCheckResult{Error: fmt.Errorf("failed to send a request to %s: %w", siteUrl, err)}
+	}
+
+	if resp.StatusCode >= 300 {
+		errorMessage := resp.Status
+
+		if resp.Header.Get("Cf-Mitigated") == "challenge" {
+			errorMessage = "Check blocked by Cloudflare challenge"
+		}
+
+		return &URLCheckResult{
+			StatusCode: resp.StatusCode,
+			Error:      errors.New(errorMessage),
+		}
+	}
+
+	return &URLCheckResult{
+		StatusCode: resp.StatusCode,
+	}
 }
 
 func (bc *BookmarkChecker) userAgentString() string {

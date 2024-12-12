@@ -27,6 +27,8 @@ func TestCreate(t *testing.T) {
 	assert.True(t, actual.ID >= 1)
 	assert.True(t, expected.IsWorking)
 	assert.False(t, expected.IgnoreCheck)
+	assert.Equal(t, 0, actual.LastStatusCode)
+	assert.Empty(t, actual.ErrorMessage)
 
 	bookmarks := getBookmarks(t, db, repo)
 	assert.Len(t, bookmarks, 1)
@@ -53,6 +55,8 @@ func TestUpdate(t *testing.T) {
 	bookmark.IsPrivate = false
 	bookmark.IgnoreCheck = true
 	bookmark.Tags = []string{"updated1", "updated2"}
+	bookmark.LastStatusCode = 500
+	bookmark.ErrorMessage = "Internal Server Error"
 
 	actual, err := repo.Update(bookmark)
 	assert.Nil(t, err)
@@ -67,6 +71,8 @@ func TestUpdate(t *testing.T) {
 	assert.Equal(t, bookmark.Tags, tags)
 
 	assert.True(t, bookmarks[0].IsWorking)
+	assert.Equal(t, bookmark.LastStatusCode, bookmarks[0].LastStatusCode)
+	assert.Equal(t, bookmark.ErrorMessage, bookmarks[0].ErrorMessage)
 }
 
 func TestGet(t *testing.T) {
@@ -405,14 +411,16 @@ func TestBrokenBookmarksExist(t *testing.T) {
 
 func createBookmark(isPrivate bool) *Bookmark {
 	return &Bookmark{
-		URL:         "https://example.org",
-		Title:       "Test title",
-		Description: "Test description",
-		IsPrivate:   isPrivate,
-		Created:     removeNanoseconds(time.Now()),
-		Tags:        []string{"tag1", "tag2"},
-		IsWorking:   true,
-		IgnoreCheck: false,
+		URL:            "https://example.org",
+		Title:          "Test title",
+		Description:    "Test description",
+		IsPrivate:      isPrivate,
+		Created:        removeNanoseconds(time.Now()),
+		Tags:           []string{"tag1", "tag2"},
+		IsWorking:      true,
+		IgnoreCheck:    false,
+		LastStatusCode: 0,
+		ErrorMessage:   "",
 	}
 }
 
