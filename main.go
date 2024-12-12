@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"time"
 
+	cloudflarebp "github.com/DaRealFreak/cloudflare-bp-go"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	_ "github.com/mattn/go-sqlite3"
@@ -87,7 +88,11 @@ func initializeBookmarkChecker(appConfig *config.AppConfig, db *sql.DB) {
 	}
 
 	repo := bookmarks.NewSqliteRepository(db)
-	checker := bookmarks.NewBookmarkChecker(appConfig, repo, http.DefaultClient)
+
+	client := &http.Client{}
+	client.Transport = cloudflarebp.AddCloudFlareByPass(client.Transport)
+
+	checker := bookmarks.NewBookmarkChecker(appConfig, repo, client)
 	notifier := notifications.NewNotifier(appConfig)
 
 	interval := time.Duration(appConfig.CheckInterval) * time.Hour

@@ -5,15 +5,17 @@ import (
 )
 
 type Bookmark struct {
-	ID          int64
-	URL         string
-	Title       string
-	Description string
-	IsPrivate   bool
-	Created     time.Time
-	Tags        []string
-	IsWorking   bool
-	IgnoreCheck bool
+	ID             int64
+	URL            string
+	Title          string
+	Description    string
+	IsPrivate      bool
+	Created        time.Time
+	Tags           []string
+	IsWorking      bool
+	IgnoreCheck    bool
+	LastStatusCode int
+	ErrorMessage   string
 }
 
 type BookmarkResult struct {

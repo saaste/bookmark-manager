@@ -1,3 +1,7 @@
+github.com/DaRealFreak/cloudflare-bp-go v1.0.4 h1:33X8Z0YMV1DEVvL/kYLku+rjb4wF712+VIh3xBoifQ0=
+github.com/DaRealFreak/cloudflare-bp-go v1.0.4/go.mod h1:oBI9KAKb9FqdoB42uUqHU6pdP+YDWlKjpZRSk8JTuwk=
+github.com/EDDYCJY/fake-useragent v0.2.0 h1:Jcnkk2bgXmDpX0z+ELlUErTkoLb/mxFBNd2YdcpvJBs=
+github.com/EDDYCJY/fake-useragent v0.2.0/go.mod h1:5wn3zzlDxhKW6NYknushqinPcAqZcAPHy8lLczCdJdc=
 github.com/PuerkitoBio/goquery v1.10.0 h1:6fiXdLuUvYs2OJSvNRqlNPoBm6YABE226xrbavY5Wv4=
 github.com/PuerkitoBio/goquery v1.10.0/go.mod h1:TjZZl68Q3eGHNBA8CWaxAN7rOU1EbDz3CWuolcO5Yu4=
 github.com/ajg/form v1.5.1 h1:t9c7v8JUKu/XxOGBU0yjNpaMloxGEJhUkqFRq0ibGeU=

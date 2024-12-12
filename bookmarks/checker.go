@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"net/url"
 
 	"github.com/saaste/bookmark-manager/config"
 )
@@ -42,13 +43,27 @@ func (bc *BookmarkChecker) CheckBookbarks() ([]BookmarkError, error) {
 	log.Printf("Checking %d bookmarks...\n", len(bms))
 	for _, bookmark := range bms {
 
-		req, err := http.NewRequest(http.MethodGet, bookmark.URL, nil)
+		req, err := http.NewRequest(http.MethodHead, bookmark.URL, nil)
 		if err != nil {
 			return nil, fmt.Errorf("failed to create a request: %v", err)
 		}
-		req.Header.Add("User-Agent", bc.userAgentString())
+
+		url, err := url.Parse(bookmark.URL)
+		if err != nil {
+			return nil, fmt.Errorf("failed to parse URL: %v", err)
+		}
+
+		req.Header.Set("User-Agent", bc.userAgentString())
+		req.Header.Set("Priority", "u=0, i")
+		req.Header.Set("Accept", "*/*")
+		req.Header.Set("Accept-Encoding", "gzip, deflate, br, zstd")
+		req.Header.Set("Cache-Control", "no-cache")
+		req.Header.Set("Host", url.Host)
+
 		resp, err := bc.client.Do(req)
 		working := true
+		errorMessage := ""
+
 		if err != nil {
 			errors = append(errors, BookmarkError{
 				Title:   bookmark.Title,
@@ -57,6 +72,7 @@ func (bc *BookmarkChecker) CheckBookbarks() ([]BookmarkError, error) {
 			})
 			working = false
 			fmt.Printf("Bookmark #%d failed: %v\n", bookmark.ID, err)
+			errorMessage = err.Error()
 		} else if resp.StatusCode >= 300 {
 			errors = append(errors, BookmarkError{
 				Title:   bookmark.Title,
@@ -64,10 +80,19 @@ func (bc *BookmarkChecker) CheckBookbarks() ([]BookmarkError, error) {
 				Message: fmt.Sprintf("Returned %s", resp.Status),
 			})
 			working = false
+
+			if resp.Header.Get("Cf-Mitigated") == "challenge" {
+				errorMessage = "Check blocked by Cloudflare challenge"
+			} else {
+				errorMessage = resp.Status
+			}
+
 			fmt.Printf("Bookmark #%d failed with status: %s\n", bookmark.ID, resp.Status)
 		}
 
 		bookmark.IsWorking = working
+		bookmark.LastStatusCode = resp.StatusCode
+		bookmark.ErrorMessage = errorMessage
 		_, err = bc.repo.Update(bookmark)
 		if err != nil {
 			return errors, err

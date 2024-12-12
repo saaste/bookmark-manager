@@ -44,4 +44,13 @@
 
     <button type="submit">Save changes</button>
 </form>
+
+{{- if ge .Bookmark.LastStatusCode 300 -}}
+    <h3>Failed Check Result</h3>
+    <p>Status Code: {{ .Bookmark.LastStatusCode }}</p>
+    {{- if ne .Bookmark.ErrorMessage "" -}}
+    <p>ErrorMessage: {{ .Bookmark.ErrorMessage }}</p>
+    {{- end -}}
+{{- end -}}
+
 {{ end }}

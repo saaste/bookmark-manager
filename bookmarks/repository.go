@@ -80,8 +80,8 @@ func (r *SqliteRepository) Update(bookmark *Bookmark) (*Bookmark, error) {
 	defer tx.Rollback()
 
 	_, err = tx.Exec(
-		"UPDATE bookmarks SET url = ?, title = ?, description = ?, is_private = ?, is_working = ?, ignore_check = ? WHERE id = ?",
-		bookmark.URL, bookmark.Title, bookmark.Description, bookmark.IsPrivate, bookmark.IsWorking, bookmark.IgnoreCheck, bookmark.ID)
+		"UPDATE bookmarks SET url = ?, title = ?, description = ?, is_private = ?, is_working = ?, ignore_check = ?, last_status_code = ?, error_message = ? WHERE id = ?",
+		bookmark.URL, bookmark.Title, bookmark.Description, bookmark.IsPrivate, bookmark.IsWorking, bookmark.IgnoreCheck, bookmark.LastStatusCode, bookmark.ErrorMessage, bookmark.ID)
 	if err != nil {
 		return nil, fmt.Errorf("sql exec failed: %w", err)
 	}
@@ -104,7 +104,7 @@ func (r *SqliteRepository) Get(id int64) (*Bookmark, error) {
 
 	var bm Bookmark
 	var created string
-	if err := row.Scan(&bm.ID, &bm.URL, &bm.Title, &bm.Description, &bm.IsPrivate, &created, &bm.IsWorking, &bm.IgnoreCheck); err != nil {
+	if err := row.Scan(&bm.ID, &bm.URL, &bm.Title, &bm.Description, &bm.IsPrivate, &created, &bm.IsWorking, &bm.IgnoreCheck, &bm.LastStatusCode, &bm.ErrorMessage); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, ErrNotFound
 		}
@@ -500,7 +500,7 @@ func (r *SqliteRepository) getRowCount(row *sql.Row, pageSize int) (int, error) 
 func (r *SqliteRepository) scanBookmarkRow(rows *sql.Rows) (*Bookmark, error) {
 	var bm Bookmark
 	var created string
-	if err := rows.Scan(&bm.ID, &bm.URL, &bm.Title, &bm.Description, &bm.IsPrivate, &created, &bm.IsWorking, &bm.IgnoreCheck); err != nil {
+	if err := rows.Scan(&bm.ID, &bm.URL, &bm.Title, &bm.Description, &bm.IsPrivate, &created, &bm.IsWorking, &bm.IgnoreCheck, &bm.LastStatusCode, &bm.ErrorMessage); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, ErrNotFound
 		}

@@ -15,6 +15,8 @@ require (
 )
 
 require (
+	github.com/DaRealFreak/cloudflare-bp-go v1.0.4 // indirect
+	github.com/EDDYCJY/fake-useragent v0.2.0 // indirect
 	github.com/ajg/form v1.5.1 // indirect
 	github.com/andybalholm/cascadia v1.3.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
