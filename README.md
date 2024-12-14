@@ -12,6 +12,9 @@ for each tag. The app can also do [scheduled bookmark checks](#scheduled-bookmar
 Bookmark Manager aims to be as accessible as possible. It should have a pretty a quite good
 screen reader support, but if have an idea how to make it even better, feel free to file an issue!
 
+## Requirements
+- [Docker](https://www.docker.com)
+
 ## How to run
 1. Copy the following example files:
    - bookmarks.db.example ➔ bookmarks.db
@@ -28,6 +31,7 @@ docker-compose up [-d]
 By default, the forwarded port is 8000. You can change this in the `docker-compose.yaml`.
 
 ### Running with Go
+If you know what you are doing, you can also run the application directly from the source code or build your own binaries.
 ```
 go run .
 ```
@@ -38,12 +42,16 @@ The app can check for broken bookmarks, but this feature is disabled by default.
 To enable the check, set the `check_interval` setting in `config.yml` to `1` or more.
 If you want the check to run when the app starts, set the `check_on_app_start` setting to `true`.
 
-Broken bookmarks are indicated by an exclamation point icon. Yuo will also see a *Broken Bookmarks* link in the top navigation bar, which will take you to a view listing all broken bookmarks. These are only visible if you are logged in.
+Broken bookmarks are indicated by an exclamation point icon. You will also see a *Broken Bookmarks* link in the top navigation bar, which will take you to a view listing all broken bookmarks. These are only visible if you are logged in.
 
 Bookmark Manager can send a notification when it detects broken bookmarks. Currently, only
 [Gotify](https://gotify.net/) notifications are supported. To enable notifications, set
 the `gotify_enabled` setting to `true` and set `gotify_url` and `gotify_token` settings to match your
 environment.
+
+Sometimes the bookmark check fails because the server classifies the check as bot traffic and displays a [CAPTCHA](https://en.wikipedia.org/wiki/CAPTCHA). It may also block the request completely, which is known to happen with certain [Cloudflare](https://www.cloudflare.com) configuration.
+
+If some URLs work fine in a browser but fail the bookmark check, you can simply disable the check for the problematic URLs by checking the `Ignore URL checking` checkbox in the bookmark edit view.
 
 ## Customizing the UI
 Bookmark Manager supports themes. If you want to create your own theme, read the separate [Theme Documentation](/docs/THEMES.md).
