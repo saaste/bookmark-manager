@@ -50,7 +50,7 @@ func TestCheckBookbarks(t *testing.T) {
 				{
 					Title:   "Test title",
 					URL:     "https://example.org",
-					Message: "Returned 404 Not Found",
+					Message: "404 Not Found",
 				},
 			},
 		},
@@ -61,7 +61,7 @@ func TestCheckBookbarks(t *testing.T) {
 				{
 					Title:   "Test title",
 					URL:     "https://example.org",
-					Message: "mock error",
+					Message: "failed to send a request to https://example.org: mock error",
 				},
 			},
 		},

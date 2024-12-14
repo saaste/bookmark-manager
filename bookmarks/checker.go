@@ -59,7 +59,7 @@ func (bc *BookmarkChecker) CheckBookbarks() ([]BookmarkError, error) {
 				errors = append(errors, BookmarkError{
 					Title:   bookmark.Title,
 					URL:     bookmark.URL,
-					Message: fmt.Sprintf("Status: %d: %s", checkResult.StatusCode, checkResult.Error.Error()),
+					Message: checkResult.Error.Error(),
 				})
 			}
 		}
