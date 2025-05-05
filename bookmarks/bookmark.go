@@ -16,6 +16,7 @@ type Bookmark struct {
 	IgnoreCheck    bool
 	LastStatusCode int
 	ErrorMessage   string
+	NextCheck      *time.Time
 }
 
 type BookmarkResult struct {

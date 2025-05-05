@@ -47,8 +47,8 @@ func (r *SqliteRepository) Create(bookmark *Bookmark) (*Bookmark, error) {
 	defer tx.Rollback()
 
 	res, err := tx.Exec(
-		"INSERT INTO bookmarks (url, title, description, is_private, created, is_working, ignore_check) VALUES (?, ?, ?, ?, ?, ?, ?)",
-		bookmark.URL, bookmark.Title, bookmark.Description, bookmark.IsPrivate, bookmark.Created.UTC().Format(time.RFC3339), bookmark.IsWorking, bookmark.IgnoreCheck)
+		"INSERT INTO bookmarks (url, title, description, is_private, created, is_working, ignore_check, next_check) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+		bookmark.URL, bookmark.Title, bookmark.Description, bookmark.IsPrivate, bookmark.Created.UTC().Format(time.RFC3339), bookmark.IsWorking, bookmark.IgnoreCheck, nil)
 	if err != nil {
 		return nil, fmt.Errorf("sql exec failed: %w", err)
 	}
@@ -79,9 +79,14 @@ func (r *SqliteRepository) Update(bookmark *Bookmark) (*Bookmark, error) {
 
 	defer tx.Rollback()
 
+	var nextCheck *string
+	if bookmark.NextCheck != nil {
+		nextCheckFormatted := bookmark.NextCheck.UTC().Format(time.RFC3339)
+		nextCheck = &nextCheckFormatted
+	}
 	_, err = tx.Exec(
-		"UPDATE bookmarks SET url = ?, title = ?, description = ?, is_private = ?, is_working = ?, ignore_check = ?, last_status_code = ?, error_message = ? WHERE id = ?",
-		bookmark.URL, bookmark.Title, bookmark.Description, bookmark.IsPrivate, bookmark.IsWorking, bookmark.IgnoreCheck, bookmark.LastStatusCode, bookmark.ErrorMessage, bookmark.ID)
+		"UPDATE bookmarks SET url = ?, title = ?, description = ?, is_private = ?, is_working = ?, ignore_check = ?, last_status_code = ?, error_message = ?, next_check = ? WHERE id = ?",
+		bookmark.URL, bookmark.Title, bookmark.Description, bookmark.IsPrivate, bookmark.IsWorking, bookmark.IgnoreCheck, bookmark.LastStatusCode, bookmark.ErrorMessage, nextCheck, bookmark.ID)
 	if err != nil {
 		return nil, fmt.Errorf("sql exec failed: %w", err)
 	}
@@ -104,16 +109,27 @@ func (r *SqliteRepository) Get(id int64) (*Bookmark, error) {
 
 	var bm Bookmark
 	var created string
-	if err := row.Scan(&bm.ID, &bm.URL, &bm.Title, &bm.Description, &bm.IsPrivate, &created, &bm.IsWorking, &bm.IgnoreCheck, &bm.LastStatusCode, &bm.ErrorMessage); err != nil {
+	var nextCheck sql.NullString
+	if err := row.Scan(&bm.ID, &bm.URL, &bm.Title, &bm.Description, &bm.IsPrivate, &created, &bm.IsWorking, &bm.IgnoreCheck, &bm.LastStatusCode, &bm.ErrorMessage, &nextCheck); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, ErrNotFound
 		}
 		return nil, fmt.Errorf("db row scan failed: %w", err)
 	}
 
-	parsedDate, err := time.Parse(time.RFC3339, created)
+	parsedCreated, err := time.Parse(time.RFC3339, created)
 	if err != nil {
 		return nil, fmt.Errorf("time parsing failed: %w", err)
+	}
+
+	if nextCheck.Valid {
+		parsedNextCheck, err := time.Parse(time.RFC3339, nextCheck.String)
+		if err != nil {
+			return nil, fmt.Errorf("next check parsing failed: %w", err)
+		}
+		bm.NextCheck = &parsedNextCheck
+	} else {
+		bm.NextCheck = nil
 	}
 
 	tagMap, err := r.getTagsByBookmarkIDs([]int64{bm.ID})
@@ -121,7 +137,7 @@ func (r *SqliteRepository) Get(id int64) (*Bookmark, error) {
 		return nil, fmt.Errorf("fetching bookmark tags failed: %w", err)
 	}
 
-	bm.Created = parsedDate
+	bm.Created = parsedCreated
 	if tags, found := tagMap[bm.ID]; found {
 		bm.Tags = tags
 	}
@@ -365,8 +381,8 @@ func (r *SqliteRepository) GetTags(showPrivate bool) ([]string, error) {
 }
 
 func (r *SqliteRepository) GetCheckable() ([]*Bookmark, error) {
-	query := "SELECT * FROM bookmarks WHERE ignore_check = false ORDER BY created DESC, id DESC"
-	rows, err := r.db.Query(query)
+	query := "SELECT * FROM bookmarks WHERE ignore_check = false AND (next_check IS NULL OR next_check >= ?) ORDER BY created DESC, id DESC"
+	rows, err := r.db.Query(query, time.Now().UTC().Format(time.RFC3339))
 	if err != nil {
 		return nil, fmt.Errorf("fetching bookmarks failed: %w", err)
 	}
@@ -500,18 +516,30 @@ func (r *SqliteRepository) getRowCount(row *sql.Row, pageSize int) (int, error) 
 func (r *SqliteRepository) scanBookmarkRow(rows *sql.Rows) (*Bookmark, error) {
 	var bm Bookmark
 	var created string
-	if err := rows.Scan(&bm.ID, &bm.URL, &bm.Title, &bm.Description, &bm.IsPrivate, &created, &bm.IsWorking, &bm.IgnoreCheck, &bm.LastStatusCode, &bm.ErrorMessage); err != nil {
+	var nextCheck sql.NullString
+	if err := rows.Scan(&bm.ID, &bm.URL, &bm.Title, &bm.Description, &bm.IsPrivate, &created, &bm.IsWorking, &bm.IgnoreCheck, &bm.LastStatusCode, &bm.ErrorMessage, &nextCheck); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, ErrNotFound
 		}
 		return nil, fmt.Errorf("scanning bookmark row failed: %w", err)
 	}
 
-	parsedDate, err := time.Parse(time.RFC3339, created)
+	parsedCreated, err := time.Parse(time.RFC3339, created)
 	if err != nil {
-		return nil, fmt.Errorf("parsing time failed: %w", err)
+		return nil, fmt.Errorf("parsing created failed: %w", err)
 	}
-	bm.Created = parsedDate
+	bm.Created = parsedCreated
+
+	if nextCheck.Valid {
+		parsedNextCheck, err := time.Parse(time.RFC3339, nextCheck.String)
+		if err != nil {
+			return nil, fmt.Errorf("parsing next check failed: %w", err)
+		}
+		bm.NextCheck = &parsedNextCheck
+	} else {
+		bm.NextCheck = nil
+	}
+
 	return &bm, nil
 }
 
