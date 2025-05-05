@@ -30,7 +30,7 @@ page_size: 10
 port: 8000
 
 # DON'T CHANGE! NOT SUPPORTED YET!
-template: default
+theme: default
 
 # -------------
 # BOOKMARK CHECK

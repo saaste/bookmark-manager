@@ -46,6 +46,13 @@ func RunMigrations(db *sql.DB) error {
 		}
 	}
 
+	if latestMigration < 5 {
+		err = migration5(tx)
+		if err != nil {
+			return err
+		}
+	}
+
 	return tx.Commit()
 }
 
@@ -144,6 +151,26 @@ func migration4(tx *sql.Tx) error {
 
 	statements = append(statements, fmt.Sprintf(`
 	INSERT INTO migrations (version, created) VALUES (%d, "%s")`, 4, time.Now().UTC().Format(time.RFC3339)))
+
+	for _, statement := range statements {
+		_, err := tx.Exec(statement)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func migration5(tx *sql.Tx) error {
+	statements := make([]string, 0)
+
+	statements = append(statements, `
+	ALTER TABLE bookmarks
+		ADD COLUMN next_check TEXT NULL DEFAULT NULL`)
+
+	statements = append(statements, fmt.Sprintf(`
+	INSERT INTO migrations (version, created) VALUES (%d, "%s")`, 5, time.Now().UTC().Format(time.RFC3339)))
 
 	for _, statement := range statements {
 		_, err := tx.Exec(statement)

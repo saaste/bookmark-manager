@@ -29,6 +29,7 @@ func TestCreate(t *testing.T) {
 	assert.False(t, expected.IgnoreCheck)
 	assert.Equal(t, 0, actual.LastStatusCode)
 	assert.Empty(t, actual.ErrorMessage)
+	assert.Nil(t, actual.NextCheck)
 
 	bookmarks := getBookmarks(t, db, repo)
 	assert.Len(t, bookmarks, 1)
@@ -49,6 +50,10 @@ func TestUpdate(t *testing.T) {
 	bookmark, err := repo.Create(expected)
 	assert.Nil(t, err)
 
+	var nextCheckValue *time.Time
+	nextCheck := time.Date(2025, time.January, 1, 0, 0, 0, 0, time.UTC)
+	nextCheckValue = &nextCheck
+
 	bookmark.URL = "https://example.org/updated"
 	bookmark.Title = "Updated title"
 	bookmark.Description = "Updated description"
@@ -57,6 +62,7 @@ func TestUpdate(t *testing.T) {
 	bookmark.Tags = []string{"updated1", "updated2"}
 	bookmark.LastStatusCode = 500
 	bookmark.ErrorMessage = "Internal Server Error"
+	bookmark.NextCheck = nextCheckValue
 
 	actual, err := repo.Update(bookmark)
 	assert.Nil(t, err)
@@ -73,6 +79,7 @@ func TestUpdate(t *testing.T) {
 	assert.True(t, bookmarks[0].IsWorking)
 	assert.Equal(t, bookmark.LastStatusCode, bookmarks[0].LastStatusCode)
 	assert.Equal(t, bookmark.ErrorMessage, bookmarks[0].ErrorMessage)
+	assert.Equal(t, nextCheckValue, bookmark.NextCheck)
 }
 
 func TestGet(t *testing.T) {

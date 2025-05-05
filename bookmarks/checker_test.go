@@ -31,6 +31,7 @@ func TestCheckBookbarks(t *testing.T) {
 		testName       string
 		responseCode   int
 		responseStatus string
+		responseHeader http.Header
 		getError       error
 		expected       []BookmarkError
 	}{
@@ -51,6 +52,22 @@ func TestCheckBookbarks(t *testing.T) {
 					Title:   "Test title",
 					URL:     "https://example.org",
 					Message: "404 Not Found",
+				},
+			},
+		},
+		{
+			testName:       "Too many requests",
+			responseCode:   http.StatusTooManyRequests,
+			responseStatus: "429 Too Many Requests",
+			responseHeader: http.Header{
+				"Retry-After": []string{"10"},
+			},
+			getError: nil,
+			expected: []BookmarkError{
+				{
+					Title:   "Test title",
+					URL:     "https://example.org",
+					Message: "429 Too Many Requests",
 				},
 			},
 		},
@@ -77,6 +94,7 @@ func TestCheckBookbarks(t *testing.T) {
 				response: &http.Response{
 					StatusCode: tt.responseCode,
 					Status:     tt.responseStatus,
+					Header:     tt.responseHeader,
 				},
 				getError: tt.getError,
 			}

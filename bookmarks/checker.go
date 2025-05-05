@@ -6,6 +6,8 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"strconv"
+	"time"
 
 	"github.com/saaste/bookmark-manager/config"
 )
@@ -19,6 +21,7 @@ type BookmarkError struct {
 type URLCheckResult struct {
 	StatusCode int
 	Error      error
+	NextCheck  *time.Time
 }
 
 type HttpClient interface {
@@ -66,6 +69,7 @@ func (bc *BookmarkChecker) CheckBookbarks() ([]BookmarkError, error) {
 
 		bookmark.IsWorking = checkResult.Error == nil
 		bookmark.LastStatusCode = checkResult.StatusCode
+		bookmark.NextCheck = checkResult.NextCheck
 		if checkResult.Error != nil {
 			bookmark.ErrorMessage = checkResult.Error.Error()
 		} else {
@@ -113,6 +117,24 @@ func (bc *BookmarkChecker) checkURL(siteUrl string, method string) *URLCheckResu
 	}
 
 	if resp.StatusCode >= 300 {
+
+		if resp.StatusCode == http.StatusTooManyRequests {
+			// Check for Retry-After header
+			nextCheck := time.Now().Add(24 * 7 * time.Hour)
+			if resp.Header.Get("Retry-After") != "" {
+				retryAfterSeconds, err := strconv.ParseInt(resp.Header.Get("Retry-After"), 10, 64)
+				if err != nil {
+					return &URLCheckResult{Error: fmt.Errorf("failed to parse Retry-After header: %v", err)}
+				}
+				nextCheck = time.Now().Add(time.Duration(retryAfterSeconds) * time.Second)
+			}
+			return &URLCheckResult{
+				StatusCode: resp.StatusCode,
+				Error:      errors.New("429 Too Many Requests"),
+				NextCheck:  &nextCheck,
+			}
+		}
+
 		errorMessage := resp.Status
 
 		if resp.Header.Get("Cf-Mitigated") == "challenge" {
