@@ -51,6 +51,9 @@
     {{- if ne .Bookmark.ErrorMessage "" -}}
     <p>ErrorMessage: {{ .Bookmark.ErrorMessage }}</p>
     {{- end -}}
+    {{- if .Bookmark.NextCheck -}}
+    <p>Next check: {{ .Bookmark.NextCheck }}</p>
+    {{- end -}}
 {{- end -}}
 
 {{ end }}
