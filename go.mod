@@ -7,7 +7,7 @@ toolchain go1.23.4
 require (
 	github.com/DaRealFreak/cloudflare-bp-go v1.0.4
 	github.com/PuerkitoBio/goquery v1.10.2
-	github.com/go-chi/chi/v5 v5.2.1
+	github.com/go-chi/chi/v5 v5.2.2
 	github.com/go-chi/render v1.0.3
 	github.com/mattn/go-sqlite3 v1.14.24
 	github.com/stretchr/testify v1.10.0
